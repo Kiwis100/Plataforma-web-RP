@@ -68,25 +68,25 @@ const campaignVideos = [
   {
     id: 1,
     title: "¿Cómo funcionará el Anillo Digital de Seguridad en Surco?",
-    duration: "02:15",
+    duration: "01:59",
     views: "24.5K vistas",
     tag: "Seguridad",
-    thumbnail: "https://images.unsplash.com/photo-1557597774-9d273605dfa9?auto=format&fit=crop&w=800&q=80"
+    video: "videos/vid1.mp4"
   },
   {
     id: 2,
     title: "Mensaje de Juan Palma a las Familias Surcanas",
-    duration: "01:45",
+    duration: "01:07",
     views: "18.2K vistas",
     tag: "Mensaje",
-    thumbnail: "https://images.unsplash.com/photo-1475721027785-f74eccf877e2?auto=format&fit=crop&w=800&q=80"
+    video: "videos/vid2.mp4"
   },
   {
     id: 3,
     title: "Solución Inteligente al Tráfico en Av. Benavides y Primavera",
-    duration: "03:10",
+    duration: "00:18",
     views: "31.0K vistas",
     tag: "Movilidad",
-    thumbnail: "https://images.unsplash.com/photo-1506521781263-d8422e82f27a?auto=format&fit=crop&w=800&q=80"
+    video: "videos/vid3.mp4"
   }
 ];

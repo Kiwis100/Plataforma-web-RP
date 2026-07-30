@@ -273,15 +273,33 @@ document.addEventListener('DOMContentLoaded', () => {
   if (videosGrid) {
     videosGrid.innerHTML = campaignVideos.map(video => `
       <div class="glass-card" style="overflow: hidden;">
-        <div style="position: relative; height: 200px;">
-          <img src="${video.thumbnail}" alt="${video.title}" style="width: 100%; height: 100%; object-fit: cover;" />
-          <div style="position: absolute; inset: 0; background: rgba(10,25,47,0.4); display: flex; align-items: center; justify-content: center;">
-            <div style="background: var(--accent-gold); width: 54px; height: 54px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #FFF;">
-              <i data-lucide="play" style="margin-left: 4px;"></i>
-            </div>
-          </div>
-          <span style="position: absolute; bottom: 10px; right: 10px; background: rgba(0,0,0,0.8); color: #FFF; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.75rem;">${video.duration}</span>
-        </div>
+    <div style="position: relative; height: 180px; background: #000; border-radius: 12px; overflow: hidden;">
+  <video
+    controls
+    preload="metadata"
+    style="
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    "
+  >
+    <source src="${video.video}" type="video/mp4">
+    Tu navegador no soporta video.
+  </video>
+
+  <span style="
+      position:absolute;
+      bottom:8px;
+      right:8px;
+      background:rgba(0,0,0,.75);
+      color:#fff;
+      padding:.2rem .5rem;
+      border-radius:4px;
+      font-size:.75rem;">
+      ${video.duration}
+  </span>
+</div>
         <div style="padding: 1.25rem;">
           <span class="badge badge-navy" style="font-size: 0.75rem;">${video.tag}</span>
           <h4 style="font-size: 1.1rem; font-weight: 800; color: var(--primary-dark); margin: 0.4rem 0;">${video.title}</h4>

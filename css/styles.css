@@ -240,7 +240,7 @@ h1, h2, h3, h4, h5, h6 {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 80px;
+  height: 120px;
 }
 
 .nav-brand {
@@ -251,8 +251,8 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .nav-brand-logo {
-  height: 80px;
-  padding: 0.4rem 0.65rem;
+  height: 120px;
+  padding: 0.7rem 0.65rem;
   border-radius: var(--radius-sm);
   display: flex;
   align-items: center;
