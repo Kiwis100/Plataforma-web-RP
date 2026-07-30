@@ -231,16 +231,16 @@
   <section id="mapa-surco" class="section-padding bg-light">
     <div class="container">
       <div class="section-header">
-        <span class="badge badge-gold">Participación Vecinal Directa</span>
-        <h2>Mapa de Problemas de Surco</h2>
-        <p>Diagnósticos vecinales reportados en el distrito y la propuesta técnica de Juan Palma para solucionarlos.</p>
+        <span class="badge badge-gold">Basado en el Plan de Gobierno (137 páginas)</span>
+        <h2>Los Problemas de Surco y las Soluciones de Juan Palma</h2>
+        <p>Los 9 ejes estratégicos identificados en el Plan de Gobierno, con el programa que propone Juan Palma y cómo se implementará cada uno.</p>
       </div>
 
       <div class="map-container-grid">
         <aside class="sectors-sidebar">
           <h3>
             <i data-lucide="funnel" style="color: var(--primary-navy);"></i>
-            <span>Sectores de Surco</span>
+            <span>Ejes Estratégicos</span>
           </h3>
 
           <div id="sectors-list">
@@ -250,17 +250,17 @@
           <div class="mt-4 pt-3 border-top">
             <button class="btn btn-primary w-100" id="btn-open-report-modal">
               <i data-lucide="circle-plus"></i>
-              <span>Reportar Problema Vecinal</span>
+              <span>Reportar una Incidencia</span>
             </button>
           </div>
         </aside>
 
         <div>
           <div class="issues-header-bar">
-            <span id="issues-count-text">Mostrando reportes vecinales</span>
+            <span id="issues-count-text">Mostrando los 9 problemas estratégicos</span>
             <div class="badges-group">
-              <span class="badge-status badge-priorizado">Priorizado en Plan</span>
-              <span class="badge-status badge-solucionado">Solución Lista</span>
+              <span class="badge-status badge-priorizado">Plan de Gobierno</span>
+              <span class="badge-status badge-diagnostico">Reporte Vecinal</span>
             </div>
           </div>
 
@@ -728,37 +728,28 @@
         <i data-lucide="x"></i>
       </button>
 
-      <h3>Reportar Problema o Parque Descuidado en Surco</h3>
-      <p class="text-muted mb-4">Tu reporte será incorporado a los diagnósticos de los primeros 100 días de gestión.</p>
+      <h3>Reportar una Incidencia Vecinal</h3>
+        <p class="text-muted mb-4">Tu reporte se vinculará a uno de los 9 ejes del Plan de Gobierno y será evaluado por el equipo técnico de Juan Palma.</p>
 
       <form id="report-issue-form">
         <div class="form-group">
-          <label class="form-label">Título de la Incidencia / Parque:</label>
+          <label class="form-label">Título de la Incidencia:</label>
           <input type="text" id="report-title" required class="form-control" placeholder="Ej. Parque abandonado con luces quemadas en Los Rosales" />
         </div>
 
-        <div class="form-grid-2">
-          <div class="form-group">
-            <label class="form-label">Sector de Surco:</label>
-            <select id="report-sector" class="form-control">
-              <option value="sector-1">Sector 1: Chacarilla & Valle Hermoso</option>
-              <option value="sector-2">Sector 2: Monterrico & Las Casuarinas</option>
-              <option value="sector-3">Sector 3: Higuereta & Los Rosales</option>
-              <option value="sector-4">Sector 4: Surco Viejo & Cercado</option>
-              <option value="sector-5">Sector 5: Próceres & Sagitario</option>
-              <option value="sector-6">Sector 6: Precursores & Bolivariano</option>
-            </select>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">Categoría:</label>
-            <select id="report-category" class="form-control">
-              <option value="Parques y Áreas Verdes">Parques y Áreas Verdes</option>
-              <option value="Seguridad Ciudadana">Seguridad Ciudadana</option>
-              <option value="Tráfico y Semáforos">Tráfico y Semáforos</option>
-              <option value="Limpieza y Basura">Limpieza y Basura</option>
-            </select>
-          </div>
+        <div class="form-group">
+          <label class="form-label">Eje del Plan de Gobierno relacionado:</label>
+          <select id="report-sector" class="form-control">
+            <option value="seguridad">Seguridad Ciudadana</option>
+            <option value="movilidad">Movilidad Urbana</option>
+            <option value="ambiente">Medio Ambiente</option>
+            <option value="limpieza">Limpieza Pública</option>
+            <option value="salud">Salud</option>
+            <option value="adulto-mayor">Adulto Mayor</option>
+            <option value="emprendimiento">Emprendimiento</option>
+            <option value="gobierno-digital">Gobierno Digital</option>
+            <option value="transparencia">Transparencia</option>
+          </select>
         </div>
 
         <div class="form-group">

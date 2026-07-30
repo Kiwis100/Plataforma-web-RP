@@ -153,47 +153,49 @@ document.addEventListener('DOMContentLoaded', () => {
       : surcoIssues.filter(i => i.sectorId === activeSectorFilter);
 
     if (issuesCountText) {
-      issuesCountText.textContent = `Mostrando ${filtered.length} reportes vecinales`;
+      issuesCountText.textContent = `Mostrando ${filtered.length} problema${filtered.length === 1 ? '' : 's'}`;
     }
 
     issuesListContainer.innerHTML = filtered.map(issue => `
       <div class="issue-card">
-        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.75rem;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem; gap: 1rem; flex-wrap: wrap;">
           <div>
-            <span style="font-size: 0.8rem; color: var(--primary-navy); font-weight: 700;">
-              ${issue.sectorName} • ${issue.category}
+            <span style="font-size: 0.8rem; color: var(--primary-navy); font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em;">
+              ${issue.sectorName}
             </span>
-            <h4 style="font-size: 1.2rem; font-weight: 800; color: var(--primary-dark); margin: 0.25rem 0;">
+            <h4 style="font-size: 1.25rem; font-weight: 800; color: var(--primary-dark); margin: 0.25rem 0;">
               ${issue.title}
             </h4>
-            <p style="font-size: 0.875rem; color: var(--text-muted); display: flex; align-items: center; gap: 0.3rem;">
-              <i data-lucide="map-pin" style="color: #EF4444; width: 14px;"></i>
-              ${issue.location}
-            </p>
           </div>
 
-          <span class="badge-status badge-${issue.statusBadge}">
-            ${issue.status}
+          <span class="badge-status ${issue.isOfficial ? 'badge-priorizado' : 'badge-diagnostico'}">
+            ${issue.isOfficial ? 'Plan de Gobierno' : 'Reporte Vecinal'}
           </span>
         </div>
 
-        <p style="font-size: 0.95rem; color: var(--text-main); margin-bottom: 1rem; line-height: 1.5;">
-          "${issue.description}"
-        </p>
-
-        <div style="background: #F0F9FF; padding: 1rem; border-radius: var(--radius-sm); border-left: 4px solid var(--primary-blue); margin-bottom: 1rem;">
-          <strong style="color: var(--primary-navy); font-size: 0.875rem; display: block; margin-bottom: 0.3rem;">
-            💡 Solución Propuesta por Juan Palma:
-          </strong>
-          <p style="font-size: 0.9rem; color: #1E3A8A; margin: 0;">${issue.proposedSolution}</p>
+        <div class="issue-block issue-block-problema">
+          <strong>🟥 Problema Detectado</strong>
+          <p>${issue.description}</p>
         </div>
 
-        <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; color: var(--text-muted);">
-          <span>Reportado: ${issue.dateReported}</span>
+        <div class="issue-block issue-block-propuesta">
+          <strong>🟨 ¿Qué Propone Juan Palma? — <span style="color: var(--accent-gold);">${issue.programName}</span></strong>
+          <p>${issue.proposedSolution}</p>
+        </div>
 
+        ${issue.implementation && issue.implementation.length ? `
+          <div class="issue-block issue-block-implementacion">
+            <strong>🟩 ¿Cómo se Implementará?</strong>
+            <ul class="issue-implementation-list">
+              ${issue.implementation.map(step => `<li><i data-lucide="circle-check-big"></i><span>${step}</span></li>`).join('')}
+            </ul>
+          </div>
+        ` : ''}
+
+        <div style="display: flex; justify-content: flex-end; align-items: center; margin-top: 1rem;">
           <button class="btn btn-outline upvote-btn" data-id="${issue.id}" style="padding: 0.4rem 0.9rem; font-size: 0.82rem;">
             <i data-lucide="thumbs-up"></i>
-            <span>Apoyar Solución (${issue.upvotes})</span>
+            <span>Apoyar esta Solución (${issue.upvotes})</span>
           </button>
         </div>
       </div>
@@ -429,25 +431,22 @@ document.addEventListener('DOMContentLoaded', () => {
       e.preventDefault();
       const title = document.getElementById('report-title').value;
       const sectorId = document.getElementById('report-sector').value;
-      const category = document.getElementById('report-category').value;
       const location = document.getElementById('report-location').value;
       const desc = document.getElementById('report-description').value;
 
-      const sectorObj = surcoSectors.find(s => s.id === sectorId);
+      const sectorObj = surcoSectors.find(s => s.id === sectorId) || { name: "Otro" };
 
       const newIssue = {
-        id: `ISSUE-${surcoIssues.length + 1}`,
+        id: `VECINAL-${Date.now()}`,
         sectorId: sectorId,
         sectorName: sectorObj.name,
-        location: location,
-        category: category,
         title: title,
-        description: desc,
-        status: "Registrado para Diagnóstico",
-        statusBadge: "diagnostico",
-        proposedSolution: "La brigada técnica de Juan Palma evaluará la zona para su atención en los primeros 100 días.",
-        upvotes: 1,
-        dateReported: "Hoy"
+        description: `${desc}${location ? ' (Ubicación: ' + location + ')' : ''}`,
+        programName: "En Evaluación Técnica",
+        proposedSolution: "La brigada técnica de Juan Palma evaluará esta incidencia para su atención dentro de los primeros 100 días de gestión.",
+        implementation: [],
+        isOfficial: false,
+        upvotes: 1
       };
 
       surcoIssues.unshift(newIssue);

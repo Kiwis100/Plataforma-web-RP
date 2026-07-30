@@ -29,7 +29,7 @@ Puedes ver los 6 ejes completos en la sección <strong>"Plan de Gobierno"</stron
     topic: "Recuperemos los Parques Más Bonitos del Perú",
     response: `🌳 <strong>Eje 2: Recuperemos los Parques Más Bonitos del Perú</strong><br/><br/>
 Todo Surco merece parques bonitos e iluminados para las familias.<br/><br/>
-¿Quieres reportar un parque o espacio descuidado? Ve a la sección <strong>"Mapa de Problemas de Surco"</strong> en esta misma página, selecciona tu sector y haz clic en <strong>"Reportar Problema"</strong>. También puedes escribirnos por WhatsApp al <strong>907 027 516</strong>.`
+¿Quieres reportar un parque o espacio descuidado? Ve a la sección <strong>"Los Problemas de Surco y las Soluciones de Juan Palma"</strong> en esta misma página y haz clic en <strong>"Reportar una Incidencia"</strong>. También puedes escribirnos por WhatsApp al <strong>907 027 516</strong>.`
   },
   {
     keywords: ["pista", "vereda", "calle", "trafico", "tráfico", "transporte", "movilidad", "semaforo", "semáforo"],

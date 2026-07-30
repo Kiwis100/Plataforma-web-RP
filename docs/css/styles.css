@@ -648,10 +648,60 @@ body.nav-open { overflow: hidden; }
 
 .badge-priorizado { background: #FEF3C7; color: #D97706; }
 .badge-solucionado { background: #D1FAE5; color: #059669; }
+.badge-diagnostico { background: #DBEAFE; color: #1D4ED8; }
 
 .issue-card {
   background: #FFFFFF; border-radius: var(--radius-md); padding: 1.5rem;
   border: 1px solid var(--border-light); margin-bottom: 1.25rem; box-shadow: var(--shadow-sm);
+}
+
+.issue-block {
+  padding: 1rem 1.15rem;
+  border-radius: var(--radius-sm);
+  margin-bottom: 0.9rem;
+}
+
+.issue-block strong {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 700;
+  margin-bottom: 0.4rem;
+  color: var(--primary-dark);
+}
+
+.issue-block p {
+  font-size: 0.92rem;
+  color: var(--text-main);
+  line-height: 1.55;
+  margin: 0;
+}
+
+.issue-block-problema { background: #FEF2F2; border-left: 4px solid #EF4444; }
+.issue-block-propuesta { background: #FFFBEB; border-left: 4px solid var(--accent-gold); }
+.issue-block-implementacion { background: #F0FDF4; border-left: 4px solid #22C55E; }
+
+.issue-implementation-list {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.issue-implementation-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  font-size: 0.88rem;
+  color: var(--text-main);
+}
+
+.issue-implementation-list li i {
+  color: #22C55E;
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  margin-top: 0.15rem;
 }
 
 /* Grid System */

@@ -1,0 +1,31 @@
+name: Deploy a GitHub Pages
+
+# Se ejecuta automáticamente cada vez que se sube (push) código a la rama
+# "main" o "develop". Ajusta la lista de abajo si usas otros nombres de rama.
+on:
+  push:
+    branches:
+      - main
+      - develop
+  workflow_dispatch: # permite ejecutarlo manualmente desde la pestaña "Actions"
+
+# Permisos necesarios para que la Action pueda escribir en el repositorio
+# (crear/actualizar la rama gh-pages) y publicar en GitHub Pages.
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar el código del repositorio
+        uses: actions/checkout@v4
+
+      - name: Publicar en la rama gh-pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: . # el sitio es 100% estático, se publica tal cual
+          publish_branch: gh-pages
