@@ -1,13 +1,10 @@
 package pe.juanpalma.backend.service;
 
-import pe.juanpalma.backend.dto.ContactRequest;
 import pe.juanpalma.backend.dto.IssueRequest;
 import pe.juanpalma.backend.dto.PersoneroRequest;
-import pe.juanpalma.backend.entity.ContactMessage;
 import pe.juanpalma.backend.entity.IssueReport;
 import pe.juanpalma.backend.entity.IssueStatus;
 import pe.juanpalma.backend.entity.Personero;
-import pe.juanpalma.backend.repository.ContactMessageRepository;
 import pe.juanpalma.backend.repository.IssueReportRepository;
 import pe.juanpalma.backend.repository.PersoneroRepository;
 
@@ -22,20 +19,17 @@ import java.util.List;
 public class FormService {
 
     private final PersoneroRepository personeros;
-    private final ContactMessageRepository contacts;
     private final IssueReportRepository issues;
     private final TextSecurityService security;
     private final FileStorageService fileStorage;
 
     public FormService(
             PersoneroRepository personeros,
-            ContactMessageRepository contacts,
             IssueReportRepository issues,
             TextSecurityService security,
             FileStorageService fileStorage) {
 
         this.personeros = personeros;
-        this.contacts = contacts;
         this.issues = issues;
         this.security = security;
         this.fileStorage = fileStorage;
@@ -65,31 +59,6 @@ public class FormService {
         v.setRole(r.role());
 
         return personeros.save(v);
-    }
-
-    @Transactional
-    public ContactMessage contact(ContactRequest r) {
-
-        security.validateDni(r.dni());
-
-        security.validateText(
-                r.name(),
-                r.phone(),
-                r.subject(),
-                r.message()
-        );
-
-        ContactMessage c = new ContactMessage();
-
-        c.setName(r.name().trim());
-        c.setDniHash(security.hashDni(r.dni()));
-        c.setDniMasked(security.maskDni(r.dni()));
-        c.setPhone(r.phone().trim());
-        c.setSector(r.sector());
-        c.setSubject(r.subject());
-        c.setMessage(r.message().trim());
-
-        return contacts.save(c);
     }
 
     @Transactional

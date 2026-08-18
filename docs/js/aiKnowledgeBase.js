@@ -78,8 +78,7 @@ Puedes ver el documento completo en la sección <strong>"Plan de Gobierno"</stro
     topic: "Contacto",
     response: `📲 <strong>Contáctanos:</strong><br/><br/>
 WhatsApp: <strong>907 027 516</strong><br/>
-Redes sociales: <strong>Juan Palma Aurazo</strong> en Facebook, Instagram y TikTok.<br/><br/>
-También puedes escribirnos desde el <strong>Formulario de Contacto Directo</strong> de esta página.`
+Redes sociales: <strong>Juan Palma Aurazo</strong> en Facebook, Instagram y TikTok.`
   }
 ];
 

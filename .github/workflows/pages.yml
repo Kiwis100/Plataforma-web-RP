@@ -1,12 +1,15 @@
-name: Deploy a GitHub Pages
+name: Deploy Frontend a GitHub Pages
 
 # Se ejecuta automáticamente cada vez que se sube (push) código a la rama
-# "main" o "develop". Ajusta la lista de abajo si usas otros nombres de rama.
+# "main" que afecte la carpeta docs/. Ajusta si usas otro nombre de rama.
 on:
   push:
     branches:
       - main
-      - develop
+    paths:
+      - "docs/**"
+      - "!docs/src/**"
+      - "!docs/pom.xml"
   workflow_dispatch: # permite ejecutarlo manualmente desde la pestaña "Actions"
 
 # Permisos necesarios para que la Action pueda escribir en el repositorio
@@ -23,9 +26,10 @@ jobs:
       - name: Descargar el código del repositorio
         uses: actions/checkout@v4
 
-      - name: Publicar en la rama gh-pages
+      - name: Publicar solo el frontend estático en la rama gh-pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: . # el sitio es 100% estático, se publica tal cual
+          publish_dir: docs
+          exclude_assets: "src,pom.xml,.env.example,README.md"
           publish_branch: gh-pages

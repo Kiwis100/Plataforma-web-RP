@@ -1,0 +1,103 @@
+name: Build y Deploy Backend a Azure App Service
+
+# Se activa al hacer push a "main" en la carpeta docs/ (donde vive el
+# backend), o manualmente desde la pestaña "Actions".
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "docs/src/**"
+      - "docs/pom.xml"
+  workflow_dispatch:
+
+# Necesario para autenticarse en Azure via OIDC (sin guardar un client secret).
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  APP_NAME: ${{ vars.AZURE_APP_SERVICE_NAME }} # ej. juanpalma-backend
+  WORKING_DIR: docs
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar el código
+        uses: actions/checkout@v4
+
+      - name: Configurar Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: maven
+          cache-dependency-path: ${{ env.WORKING_DIR }}/pom.xml
+
+      - name: Compilar y ejecutar pruebas (Maven)
+        working-directory: ${{ env.WORKING_DIR }}
+        run: mvn -B clean package
+
+      - name: Subir el .jar como artefacto
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-jar
+          path: ${{ env.WORKING_DIR }}/target/backend-plataforma.jar
+
+  deploy-staging:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: staging
+    steps:
+      - name: Descargar el .jar compilado
+        uses: actions/download-artifact@v4
+        with:
+          name: backend-jar
+
+      - name: Iniciar sesión en Azure (OIDC)
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Desplegar en el slot "staging"
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: ${{ env.APP_NAME }}
+          slot-name: staging
+          package: backend-plataforma.jar
+
+      - name: Verificar health check en staging
+        run: |
+          echo "Esperando a que el slot staging responda..."
+          sleep 40
+          curl -f "https://${{ env.APP_NAME }}-staging.azurewebsites.net/actuator/health" || exit 1
+
+  swap-a-produccion:
+    needs: deploy-staging
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+    steps:
+      - name: Iniciar sesión en Azure (OIDC)
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Swap de staging a producción
+        run: |
+          az webapp deployment slot swap \
+            --resource-group ${{ vars.AZURE_RESOURCE_GROUP }} \
+            --name ${{ env.APP_NAME }} \
+            --slot staging \
+            --target-slot production
+
+      - name: Verificar health check en producción
+        run: |
+          sleep 20
+          curl -f "https://${{ env.APP_NAME }}.azurewebsites.net/actuator/health" || exit 1

@@ -4,7 +4,6 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-import pe.juanpalma.backend.dto.ContactRequest;
 import pe.juanpalma.backend.dto.IssuePublicView;
 import pe.juanpalma.backend.dto.IssueRequest;
 import pe.juanpalma.backend.dto.PersoneroRequest;
@@ -72,18 +71,6 @@ public class FormController {
                                                @RequestParam String q) {
         authorize(key);
         return ResponseEntity.ok(service.searchPersoneros(q));
-    }
-
-    @PostMapping("/contacts")
-    public ResponseEntity<?> contact(@Valid @RequestBody ContactRequest r) {
-
-        var c = service.contact(r);
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(Map.of(
-                "success", true,
-                "message", "Mensaje registrado correctamente.",
-                "id", c.getId()
-        ));
     }
 
     // Recibe multipart/form-data: los campos de texto + un adjunto opcional

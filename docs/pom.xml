@@ -15,7 +15,7 @@
     <artifactId>backend-plataforma</artifactId>
     <version>1.0.0</version>
     <name>backend-plataforma-juan-palma</name>
-    <description>Backend de formularios y donaciones</description>
+    <description>Backend de formularios de la plataforma web de campaña</description>
 
     <properties>
         <java.version>17</java.version>
@@ -56,6 +56,7 @@
     </dependencies>
 
     <build>
+        <finalName>backend-plataforma</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

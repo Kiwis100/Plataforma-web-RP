@@ -4,9 +4,7 @@ Backend Spring Boot 3 + Java 17 para los formularios de la plataforma.
 
 ## Funciones
 
-- Donaciones.
 - Registro de personeros (nombres y apellidos por separado).
-- Mensajes de contacto.
 - Reportes de incidencias en "Los Problemas de Surco", con nombres/apellidos
   del vecino que reporta y adjunto opcional de foto o video.
 - Búsqueda por nombre o apellido (personeros y reportes).
@@ -17,8 +15,6 @@ Backend Spring Boot 3 + Java 17 para los formularios de la plataforma.
   personeros registrados, buscar por nombre/apellido.
 - Filtro de DNIs en lista negra.
 - Filtro de palabras no permitidas.
-- Protección contra doble envío de donaciones mediante `Idempotency-Key`.
-- Restricción adicional: un DNI solo puede registrar un aporte.
 - Health check.
 - Preparado para SQL Server / Azure SQL.
 
@@ -43,20 +39,7 @@ API:
 Health:
 `GET http://localhost:8080/api/health`
 
-## 2. Probar donación
-
-```bash
-curl -X POST http://localhost:8080/api/donations \
-  -H "Content-Type: application/json" \
-  -H "Idempotency-Key: 7f7b9b1e-1111-4444-8888-123456789012" \
-  -d "{\"name\":\"Juan Perez\",\"dni\":\"12345678\",\"amount\":20}"
-```
-
-Si el navegador hace doble click y genera dos requests con la misma clave, el backend conserva una sola operación.
-
-Además, el mismo DNI no puede registrar una segunda donación.
-
-## 3. Probar formulario de personeros
+## 2. Probar formulario de personeros
 
 ```bash
 curl -X POST http://localhost:8080/api/personeros \
@@ -67,7 +50,7 @@ curl -X POST http://localhost:8080/api/personeros \
 `phone` debe ser exactamente 9 dígitos numéricos. `firstName`/`lastName` solo
 aceptan letras (sin números ni símbolos).
 
-## 3b. Probar reporte de incidencia (Los Problemas de Surco)
+## 3. Probar reporte de incidencia (Los Problemas de Surco)
 
 Ahora es `multipart/form-data` (permite adjuntar foto o video opcional):
 
@@ -99,7 +82,7 @@ curl -X PUT "http://localhost:8080/api/issues/1/status?status=APPROVED" \
 Listar todos (admin): `GET /api/issues` (header `X-Admin-Key`)
 Solo aprobados (público): `GET /api/issues/approved`
 
-## 3c. Buscar por nombre o apellido
+## 4. Buscar por nombre o apellido
 
 ```bash
 curl "http://localhost:8080/api/personeros/search?q=Perez" -H "X-Admin-Key: cambiar-esta-clave"
@@ -109,7 +92,7 @@ curl "http://localhost:8080/api/issues/search?q=Mendoza" -H "X-Admin-Key: cambia
 Busca coincidencias parciales (sin distinguir mayúsculas) tanto en el nombre
 como en el apellido. También hay un buscador visual en `admin.html`.
 
-## 4. Lista negra
+## 5. Lista negra
 
 La lista negra de DNI se guarda como hash SHA-256. El DNI completo no se guarda en la base.
 
@@ -122,7 +105,7 @@ curl -X POST http://localhost:8080/api/admin/blacklist/dni \
   -d "{\"dni\":\"87654321\",\"reason\":\"Bloqueo administrativo\"}"
 ```
 
-## 5. Palabras no permitidas
+## 6. Palabras no permitidas
 
 ```bash
 curl -X POST http://localhost:8080/api/admin/blacklist/word \
@@ -133,31 +116,75 @@ curl -X POST http://localhost:8080/api/admin/blacklist/word \
 
 El filtro normaliza mayúsculas/minúsculas y tildes.
 
-## 6. SQL Server / Azure SQL
+## 7. Desplegar el backend en Azure
 
-Definir:
+Todo lo necesario ya está en el repo:
+
+- `azure/provision.sh` — crea los recursos de Azure (Resource Group, App
+  Service Plan S1 Linux, App Service Java 17 + slot `staging`, Azure SQL
+  Basic, Storage Account, Application Insights, y la identidad OIDC para
+  GitHub Actions).
+- `.github/workflows/backend-deploy.yml` — compila con Maven y despliega
+  automáticamente a `staging`, verifica el health check, y hace el swap a
+  producción.
+
+**⚠️ Importante:** no ejecuté este script — no tengo acceso a tu cuenta de
+Azure. Revísalo, edita las variables del inicio (nombre de la app, región,
+clave de SQL, tu usuario/repo de GitHub) y córrelo tú:
+
+```bash
+az login
+bash azure/provision.sh
+```
+
+Al final imprime los valores exactos que debes copiar a GitHub:
+
+1. **Settings → Secrets and variables → Actions → Secrets:**
+   `AZURE_CLIENT_ID`, `AZURE_TENANT_ID`, `AZURE_SUBSCRIPTION_ID`
+2. **Settings → Secrets and variables → Actions → Variables:**
+   `AZURE_APP_SERVICE_NAME`, `AZURE_RESOURCE_GROUP`
+3. **Settings → Environments:** crea `staging` y `production` (el workflow
+   los usa; puedes dejarlos sin reglas de protección para empezar).
+
+Después, cualquier `git push` a `main` que toque `docs/src/**` o
+`docs/pom.xml` compila y despliega solo. El primer despliegue también lo
+puedes lanzar a mano desde la pestaña **Actions → Build y Deploy Backend a
+Azure App Service → Run workflow**.
+
+**Variables de entorno que quedan configuradas automáticamente por el script**
+(App Settings del App Service, en producción y en staging):
 
 ```text
 SPRING_PROFILES_ACTIVE=sqlserver
-DB_URL=jdbc:sqlserver://SERVIDOR:1433;database=juan_palma;encrypt=true;trustServerCertificate=false;loginTimeout=30
+DB_URL=jdbc:sqlserver://SERVIDOR.database.windows.net:1433;database=...;encrypt=true;...
 DB_USERNAME=...
 DB_PASSWORD=...
-CORS_ALLOWED_ORIGINS=https://tu-frontend.github.io
+CORS_ALLOWED_ORIGINS=https://tu-usuario.github.io
 ADMIN_API_KEY=una-clave-larga-y-segura
+APPLICATIONINSIGHTS_CONNECTION_STRING=...
 ```
 
-Para Azure SQL se cambiará solamente la configuración de conexión y posteriormente se realizará la configuración de App Service, Managed Identity/secret management y GitHub Actions.
+### ⚠️ Cosas a tener en cuenta antes de usarlo en producción real
 
-## Nota importante sobre donaciones
-
-Este backend registra el aporte a nivel de sistema. No implementa todavía una pasarela bancaria ni un cobro real. La interfaz actual del frontend dice "Simular Aporte Seguro", por lo que primero estamos construyendo el registro backend. La integración de pago real debe hacerse como una fase separada.
+- **Adjuntos (`uploads/issues/`):** ahora mismo se guardan en el disco local
+  del App Service. Funciona para probar, pero **no es 100% confiable en
+  producción**: si escalas a más de una instancia, cada instancia tendría su
+  propia copia de archivos. La solución correcta es mover
+  `FileStorageService` a Azure Blob Storage (el Storage Account que crea
+  `provision.sh` ya está listo para eso) — puedo hacer ese cambio si vas a
+  recibir tráfico real.
+- **La clave de administrador (`ADMIN_API_KEY`)** y la contraseña de SQL
+  quedan como texto plano en App Settings. Para más seguridad, muévelas a
+  **Azure Key Vault** y referéncialas desde el App Service (tal como sugiere
+  el documento de migración original).
+- El `SQL_ADMIN_PASSWORD` de ejemplo en `provision.sh` **debes cambiarlo**
+  antes de correr el script.
 
 ## Integración con el frontend
 
-`docs/js/main.js` ya llama al backend con `fetch()` para: `POST /api/donations`
-(con `Idempotency-Key`), `POST /api/personeros`, `POST /api/contacts`,
-`POST /api/issues` y `GET /api/issues/approved`. La URL base se define en
-`docs/js/main.js`:
+`docs/js/main.js` ya llama al backend con `fetch()` para: `POST /api/personeros`,
+`POST /api/issues` (multipart, con adjunto opcional) y
+`GET /api/issues/approved`. La URL base se define en `docs/js/main.js`:
 
 ```js
 const API_BASE_URL = window.SURCO_API_BASE_URL || 'http://localhost:8080';
@@ -194,11 +221,14 @@ que el sitio publicado funcione con formularios reales, el backend debe
 desplegarse aparte (Azure App Service, Railway, Render, etc.) y quedar
 accesible por HTTPS.
 
-1. Sube el repo a GitHub y en **Settings → Pages** elige la rama y carpeta
-   `/docs` como origen (o usa el workflow ya incluido en
-   `.github/workflows/deploy.yml`).
-2. Despliega el backend en un servicio con Java 17 (variables de entorno:
-   `SPRING_PROFILES_ACTIVE=sqlserver`, `DB_URL`, `DB_USERNAME`, `DB_PASSWORD`,
+1. Sube el repo a GitHub y en **Settings → Pages** elige la rama `gh-pages`
+   como origen (se crea sola al correr el workflow
+   `.github/workflows/pages.yml`), o configura directamente la rama `main` /
+   carpeta `/docs` si prefieres no usar Actions para esto.
+2. Despliega el backend en Azure siguiendo la sección **"6. Desplegar el
+   backend en Azure"** de arriba (o cualquier otro servicio con Java 17:
+   Railway, Render, etc. — variables de entorno: `SPRING_PROFILES_ACTIVE=sqlserver`,
+   `DB_URL`, `DB_USERNAME`, `DB_PASSWORD`,
    `CORS_ALLOWED_ORIGINS=https://tu-usuario.github.io`, `ADMIN_API_KEY`).
 3. En `docs/index.html`, antes de cargar `js/main.js`, define la URL real del
    backend:
@@ -207,5 +237,5 @@ accesible por HTTPS.
    <script src="js/main.js"></script>
    ```
 4. Sin backend público, el sitio en GitHub Pages se ve y navega
-   perfectamente, pero los formularios (Donaciones, Personero, Reportar
+   perfectamente, pero los formularios (Personero, Reportar
    Incidencia) mostrarán un error de conexión al enviarse.
