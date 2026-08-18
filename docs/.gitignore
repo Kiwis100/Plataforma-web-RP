@@ -1,10 +1,9 @@
-# Sistema operativo
-.DS_Store
-Thumbs.db
-
-# Editores
-.vscode/
+target/
+data/
+uploads/
 .idea/
-
-# Otros
-*.log
+.vscode/
+*.iml
+.env
+.env.*
+!.env.example

@@ -2,8 +2,33 @@
    MAIN JAVASCRIPT - SURCO JUAN PALMA PLATAFORMA WEB
    ========================================================================== */
 
+const API_BASE_URL = window.SURCO_API_BASE_URL || 'http://localhost:8080';
+
 document.addEventListener('DOMContentLoaded', () => {
-  
+
+  // 0. FILTRADO DE CARACTERES EN VIVO (coincide con las validaciones del backend)
+  const SOLO_LETRAS = /[^A-Za-zÁÉÍÓÚáéíóúÑñÜü' -]/g;
+  const SOLO_DIGITOS = /[^0-9]/g;
+  const SOLO_UBICACION = /[^A-Za-zÁÉÍÓÚáéíóúÑñÜü0-9°#./,\- ]/g;
+
+  function limitarCaracteres(selector, regex) {
+    document.querySelectorAll(selector).forEach(input => {
+      input.addEventListener('input', () => {
+        const cursor = input.selectionStart;
+        const antes = input.value.length;
+        input.value = input.value.replace(regex, '');
+        const despues = input.value.length;
+        if (cursor !== null) {
+          input.setSelectionRange(cursor - (antes - despues), cursor - (antes - despues));
+        }
+      });
+    });
+  }
+
+  limitarCaracteres('.only-letters', SOLO_LETRAS);
+  limitarCaracteres('.only-digits', SOLO_DIGITOS);
+  limitarCaracteres('.only-location', SOLO_UBICACION);
+
   // 1. MOBILE MENU TOGGLE (Hamburguesa)
   const mobileToggle = document.getElementById('mobile-toggle');
   const navMenu = document.getElementById('nav-menu');
@@ -178,6 +203,15 @@ document.addEventListener('DOMContentLoaded', () => {
           <p>${issue.description}</p>
         </div>
 
+        ${issue.attachmentUrl ? `
+          <div style="margin-bottom: 1rem;">
+            ${issue.attachmentType === 'VIDEO'
+              ? `<video src="${issue.attachmentUrl}" controls style="width:100%; max-height:320px; border-radius: var(--radius-sm); background:#000;"></video>`
+              : `<img src="${issue.attachmentUrl}" alt="Evidencia del reporte" style="width:100%; max-height:320px; object-fit:cover; border-radius: var(--radius-sm);" />`
+            }
+          </div>
+        ` : ''}
+
         <div class="issue-block issue-block-propuesta">
           <strong>🟨 ¿Qué Propone Juan Palma? — <span style="color: var(--accent-gold);">${issue.programName}</span></strong>
           <p>${issue.proposedSolution}</p>
@@ -217,6 +251,72 @@ document.addEventListener('DOMContentLoaded', () => {
 
   renderSectorsSidebar();
   renderIssuesList();
+
+  // Trae los reportes vecinales reales desde el backend y los agrega a la
+  // lista (los 9 problemas oficiales de surcoIssuesData.js se mantienen).
+  async function cargarReportesBackend() {
+  try {
+    const res = await fetch(`${API_BASE_URL}/api/issues/approved`);
+
+    if (!res.ok) {
+      console.error('Error al obtener reportes aprobados:', res.status);
+      return;
+    }
+
+    const data = await res.json();
+
+    const reportes = Array.isArray(data)
+      ? data
+      : (data.issues || []);
+
+    const sectorPorId = Object.fromEntries(
+      surcoSectors.map(s => [s.id, s.name])
+    );
+
+    const nuevos = reportes.map(r => ({
+      id: `VECINAL-${r.id}`,
+      sectorId: r.sector,
+      sectorName: sectorPorId[r.sector] || r.sector || "Otro",
+
+      title: r.title,
+
+      description:
+        `${r.description}${r.location
+          ? ' (Ubicación: ' + r.location + ')'
+          : ''}`,
+
+      programName: "En Evaluación Técnica",
+
+      proposedSolution:
+        "La brigada técnica de Juan Palma evaluará esta incidencia para su atención dentro de los primeros 100 días de gestión.",
+
+      implementation: [],
+
+      isOfficial: false,
+
+      upvotes: 1,
+
+      attachmentUrl: r.attachmentPath ? `${API_BASE_URL}/${r.attachmentPath}` : null,
+      attachmentType: r.attachmentType || null
+    }));
+
+    // Mantener los 9 problemas oficiales
+    // y agregar solamente los reportes APROBADOS.
+    surcoIssues = surcoIssues
+      .filter(i => i.isOfficial)
+      .concat(nuevos);
+
+    renderSectorsSidebar();
+    renderIssuesList();
+
+  } catch (err) {
+    console.error('No se pudieron cargar los reportes aprobados:', err);
+
+    // Si el backend no está disponible,
+    // se mantienen los 9 problemas oficiales.
+  }
+}
+  cargarReportesBackend();
 
   // 4. RENDER AGENDA, NOTICIAS, VIDEOS
   const agendaGrid = document.getElementById('agenda-grid');
@@ -393,21 +493,52 @@ document.addEventListener('DOMContentLoaded', () => {
   if (btnCloseVolunteer) btnCloseVolunteer.addEventListener('click', closeVolunteerModal);
 
   if (volunteerForm) {
-    volunteerForm.addEventListener('submit', (e) => {
+    volunteerForm.addEventListener('submit', async (e) => {
       e.preventDefault();
-      volunteerForm.classList.add('hidden');
-      volunteerSuccessMsg.classList.remove('hidden');
 
-      if (window.confetti) {
-        confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+      const submitBtn = volunteerForm.querySelector('button[type="submit"]');
+      if (submitBtn) submitBtn.disabled = true;
+
+      const payload = {
+        firstName: document.getElementById('vol-firstname').value,
+        lastName: document.getElementById('vol-lastname').value,
+        dni: document.getElementById('vol-dni').value,
+        phone: document.getElementById('vol-phone').value,
+        email: document.getElementById('vol-email').value,
+        sector: document.getElementById('vol-sector').value,
+        role: document.getElementById('vol-role').value
+      };
+
+      try {
+        const res = await fetch(`${API_BASE_URL}/api/personeros`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+
+        if (!res.ok || data.success === false) {
+          throw new Error(data.error || 'No se pudo registrar tu inscripción.');
+        }
+
+        volunteerForm.classList.add('hidden');
+        volunteerSuccessMsg.classList.remove('hidden');
+
+        if (window.confetti) {
+          confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+        }
+
+        setTimeout(() => {
+          volunteerForm.reset();
+          volunteerForm.classList.remove('hidden');
+          volunteerSuccessMsg.classList.add('hidden');
+          closeVolunteerModal();
+        }, 3000);
+      } catch (err) {
+        alert(err.message || 'Ocurrió un error al registrar tu inscripción. Intenta nuevamente.');
+      } finally {
+        if (submitBtn) submitBtn.disabled = false;
       }
-
-      setTimeout(() => {
-        volunteerForm.reset();
-        volunteerForm.classList.remove('hidden');
-        volunteerSuccessMsg.classList.add('hidden');
-        closeVolunteerModal();
-      }, 3000);
     });
   }
 
@@ -426,42 +557,81 @@ document.addEventListener('DOMContentLoaded', () => {
   if (btnCloseReport) btnCloseReport.addEventListener('click', closeReportModal);
   if (btnCancelReport) btnCancelReport.addEventListener('click', closeReportModal);
 
+  const ALLOWED_ATTACHMENT_TYPES = [
+    'image/jpeg', 'image/jpg', 'image/png', 'image/webp',
+    'video/mp4', 'video/quicktime', 'video/webm'
+  ];
+  const MAX_ATTACHMENT_MB = 25;
+
+  const reportAttachmentInput = document.getElementById('report-attachment');
+  const reportAttachmentError = document.getElementById('report-attachment-error');
+
+  if (reportAttachmentInput) {
+    reportAttachmentInput.addEventListener('change', () => {
+      reportAttachmentError.style.display = 'none';
+      const file = reportAttachmentInput.files[0];
+      if (!file) return;
+
+      if (!ALLOWED_ATTACHMENT_TYPES.includes(file.type)) {
+        reportAttachmentError.textContent = 'Solo se permiten imágenes (JPG, PNG, WEBP) o videos (MP4, MOV, WEBM).';
+        reportAttachmentError.style.display = 'block';
+        reportAttachmentInput.value = '';
+        return;
+      }
+      if (file.size > MAX_ATTACHMENT_MB * 1024 * 1024) {
+        reportAttachmentError.textContent = `El archivo supera el máximo de ${MAX_ATTACHMENT_MB}MB.`;
+        reportAttachmentError.style.display = 'block';
+        reportAttachmentInput.value = '';
+      }
+    });
+  }
+
   if (reportIssueForm) {
-    reportIssueForm.addEventListener('submit', (e) => {
+    reportIssueForm.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const title = document.getElementById('report-title').value;
-      const sectorId = document.getElementById('report-sector').value;
-      const location = document.getElementById('report-location').value;
-      const desc = document.getElementById('report-description').value;
 
-      const sectorObj = surcoSectors.find(s => s.id === sectorId) || { name: "Otro" };
+      const submitBtn = reportIssueForm.querySelector('button[type="submit"]');
+      if (submitBtn) submitBtn.disabled = true;
 
-      const newIssue = {
-        id: `VECINAL-${Date.now()}`,
-        sectorId: sectorId,
-        sectorName: sectorObj.name,
-        title: title,
-        description: `${desc}${location ? ' (Ubicación: ' + location + ')' : ''}`,
-        programName: "En Evaluación Técnica",
-        proposedSolution: "La brigada técnica de Juan Palma evaluará esta incidencia para su atención dentro de los primeros 100 días de gestión.",
-        implementation: [],
-        isOfficial: false,
-        upvotes: 1
-      };
+      const formData = new FormData();
+      formData.append('reporterFirstName', document.getElementById('report-firstname').value);
+      formData.append('reporterLastName', document.getElementById('report-lastname').value);
+      formData.append('reporterDni', document.getElementById('report-dni').value);
+      formData.append('title', document.getElementById('report-title').value);
+      formData.append('sector', document.getElementById('report-sector').value);
+      formData.append('location', document.getElementById('report-location').value);
+      formData.append('description', document.getElementById('report-description').value);
 
-      surcoIssues.unshift(newIssue);
-      renderSectorsSidebar();
-      renderIssuesList();
+      const file = reportAttachmentInput ? reportAttachmentInput.files[0] : null;
+      if (file) formData.append('attachment', file);
 
-      reportIssueForm.classList.add('hidden');
-      reportSuccessMsg.classList.remove('hidden');
+      try {
+        const res = await fetch(`${API_BASE_URL}/api/issues`, {
+          method: 'POST',
+          body: formData
+        });
+        const data = await res.json();
 
-      setTimeout(() => {
-        reportIssueForm.reset();
-        reportIssueForm.classList.remove('hidden');
-        reportSuccessMsg.classList.add('hidden');
-        closeReportModal();
-      }, 2000);
+        if (!res.ok || data.success === false) {
+          throw new Error(data.error || 'No se pudo registrar tu reporte.');
+        }
+
+        await cargarReportesBackend();
+
+        reportIssueForm.classList.add('hidden');
+        reportSuccessMsg.classList.remove('hidden');
+
+        setTimeout(() => {
+          reportIssueForm.reset();
+          reportIssueForm.classList.remove('hidden');
+          reportSuccessMsg.classList.add('hidden');
+          closeReportModal();
+        }, 2000);
+      } catch (err) {
+        alert(err.message || 'Ocurrió un error al registrar tu reporte. Intenta nuevamente.');
+      } finally {
+        if (submitBtn) submitBtn.disabled = false;
+      }
     });
   }
 

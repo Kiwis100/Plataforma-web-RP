@@ -49,7 +49,7 @@
 
           <button class="btn btn-primary" id="btn-open-voluntariado">
             <i data-lucide="heart"></i>
-            <span>Voluntariado</span>
+            <span>Personero</span>
           </button>
         </li>
       </ul>
@@ -597,7 +597,7 @@
           <p class="text-muted mb-3">Sumamos a todos los vecinos comprometidos con el futuro de Santiago de Surco.</p>
           <button class="btn btn-primary w-100 mb-2" id="footer-btn-volunteer">
             <i data-lucide="heart"></i>
-            <span>Inscribirme como Voluntario</span>
+            <span>Inscribirme como Personero</span>
           </button>
           <p class="text-muted" style="font-size: 0.85rem;">
             <i data-lucide="phone" style="width: 14px; height: 14px; vertical-align: -2px;"></i>
@@ -667,7 +667,7 @@
       <div class="volunteer-header">
         <div class="heart-icon-bg"><i data-lucide="heart"></i></div>
         <div>
-          <h3>Inscripción de Voluntarios por Surco</h3>
+          <h3>Inscripción de Personeros por Surco</h3>
           <span class="text-muted">Únete al cambio positivo en tu manzana o sector</span>
         </div>
       </div>
@@ -675,29 +675,34 @@
       <form id="volunteer-form" class="mt-4">
         <div class="form-grid-2">
           <div class="form-group">
-            <label class="form-label">Nombres y Apellidos:</label>
-            <input type="text" id="vol-name" required class="form-control" placeholder="Ej. María Elena Rodríguez" />
+            <label class="form-label">Nombres:</label>
+            <input type="text" id="vol-firstname" required class="form-control only-letters" placeholder="Ej. María Elena" />
           </div>
 
           <div class="form-group">
-            <label class="form-label">DNI:</label>
-            <input type="text" id="vol-dni" required maxlength="8" pattern="[0-9]{8}" inputmode="numeric" class="form-control" placeholder="8 dígitos" />
+            <label class="form-label">Apellidos:</label>
+            <input type="text" id="vol-lastname" required class="form-control only-letters" placeholder="Ej. Rodríguez Pérez" />
           </div>
         </div>
 
         <div class="form-grid-2">
           <div class="form-group">
-            <label class="form-label">Teléfono / WhatsApp:</label>
-            <input type="tel" id="vol-phone" required class="form-control" placeholder="Ej. 907 027 516" />
+            <label class="form-label">DNI:</label>
+            <input type="text" id="vol-dni" required maxlength="8" pattern="[0-9]{8}" inputmode="numeric" class="form-control only-digits" placeholder="8 dígitos" />
           </div>
 
+          <div class="form-group">
+            <label class="form-label">Teléfono / WhatsApp:</label>
+            <input type="tel" id="vol-phone" required maxlength="9" pattern="[0-9]{9}" inputmode="numeric" class="form-control only-digits" placeholder="Ej. 907027516 (9 dígitos)" />
+          </div>
+        </div>
+
+        <div class="form-grid-2">
           <div class="form-group">
             <label class="form-label">Correo Electrónico:</label>
             <input type="email" id="vol-email" required class="form-control" placeholder="vecino@surco.pe" />
           </div>
-        </div>
 
-        <div class="form-grid-2">
           <div class="form-group">
             <label class="form-label">Tu Sector en Surco:</label>
             <select id="vol-sector" class="form-control">
@@ -709,28 +714,28 @@
               <option value="sector-6">Sector 6: Precursores & Bolivariano</option>
             </select>
           </div>
+        </div>
 
-          <div class="form-group">
-            <label class="form-label">Rol de Voluntariado Preferido:</label>
-            <select id="vol-role" class="form-control">
-              <option value="Coordinador Vecinal de Manzana">Coordinador Vecinal de Manzana</option>
-              <option value="Brigadista Digital / Redes">Brigadista Digital / Redes</option>
-              <option value="Fiscal de Mesa Electoral">Fiscal de Mesa Electoral</option>
-              <option value="Promotor de Propuestas">Promotor de Propuestas</option>
-            </select>
-          </div>
+        <div class="form-group">
+          <label class="form-label">Rol de Personero Preferido:</label>
+          <select id="vol-role" class="form-control">
+            <option value="Coordinador Vecinal de Manzana">Coordinador Vecinal de Manzana</option>
+            <option value="Brigadista Digital / Redes">Brigadista Digital / Redes</option>
+            <option value="Fiscal de Mesa Electoral">Fiscal de Mesa Electoral</option>
+            <option value="Promotor de Propuestas">Promotor de Propuestas</option>
+          </select>
         </div>
 
         <button type="submit" class="btn btn-primary w-100 mt-2">
           <i data-lucide="user-check"></i>
-          <span>Confirmar mi Registro como Voluntario</span>
+          <span>Confirmar mi Registro como Personero</span>
         </button>
       </form>
 
       <div class="volunteer-success-msg hidden" id="volunteer-success-msg">
         <i data-lucide="circle-check-big" class="success-icon"></i>
         <h3>¡Bienvenido al Equipo de Juan Palma!</h3>
-        <p id="vol-success-text">Nos pondremos en contacto contigo vía WhatsApp para entregarte tu kit de voluntario.</p>
+        <p id="vol-success-text">Nos pondremos en contacto contigo vía WhatsApp para entregarte tu kit de personero.</p>
       </div>
     </div>
   </div>
@@ -746,6 +751,23 @@
         <p class="text-muted mb-4">Tu reporte se vinculará a uno de los 9 ejes del Plan de Gobierno y será evaluado por el equipo técnico de Juan Palma.</p>
 
       <form id="report-issue-form">
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label">Nombres:</label>
+            <input type="text" id="report-firstname" required class="form-control only-letters" placeholder="Ej. Carlos" />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Apellidos:</label>
+            <input type="text" id="report-lastname" required class="form-control only-letters" placeholder="Ej. Mendoza Ruiz" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">DNI:</label>
+          <input type="text" id="report-dni" required maxlength="8" pattern="[0-9]{8}" inputmode="numeric" class="form-control only-digits" placeholder="8 dígitos" />
+        </div>
+
         <div class="form-group">
           <label class="form-label">Título de la Incidencia:</label>
           <input type="text" id="report-title" required class="form-control" placeholder="Ej. Parque abandonado con luces quemadas en Los Rosales" />
@@ -768,12 +790,19 @@
 
         <div class="form-group">
           <label class="form-label">Ubicación Exacta / Referencia:</label>
-          <input type="text" id="report-location" required class="form-control" placeholder="Ej. Calle Los Tulipanes cdra. 3" />
+          <input type="text" id="report-location" required class="form-control only-location" placeholder="Ej. Calle Los Tulipanes cdra. 3" />
         </div>
 
         <div class="form-group">
           <label class="form-label">Descripción del Problema:</label>
           <textarea id="report-description" rows="3" required class="form-control" placeholder="Describe qué sucede y desde cuándo..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Foto o Video de la Incidencia (opcional):</label>
+          <input type="file" id="report-attachment" class="form-control" accept="image/jpeg,image/jpg,image/png,image/webp,video/mp4,video/quicktime,video/webm" />
+          <span class="text-muted" style="font-size: 0.8rem;">Formatos permitidos: JPG, PNG, WEBP, MP4, MOV, WEBM. Máximo 25MB.</span>
+          <span class="admin-error" id="report-attachment-error" style="display:none; color:#DC2626; font-size:0.8rem;"></span>
         </div>
 
         <div class="flex-end-gap">
@@ -795,6 +824,10 @@
   <script src="js/surcoIssuesData.js"></script>
   <script src="js/aiKnowledgeBase.js"></script>
   <script src="js/agendaData.js"></script>
+  <!-- Para publicar en GitHub Pages con un backend real, descomenta y
+       reemplaza con la URL pública de tu backend (ver README.md):
+  <script>window.SURCO_API_BASE_URL = "https://tu-backend.azurewebsites.net";</script>
+  -->
   <script src="js/main.js"></script>
   <script>
     // Inicializar Lucide Icons
