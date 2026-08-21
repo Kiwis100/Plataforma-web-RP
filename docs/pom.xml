@@ -18,7 +18,7 @@
     <description>Backend de formularios de la plataforma web de campaña</description>
 
     <properties>
-        <java.version>17</java.version>
+        <java.version>21</java.version>
     </properties>
 
     <dependencies>
@@ -57,6 +57,28 @@
 
     <build>
         <finalName>backend-plataforma</finalName>
+        <resources>
+            <!-- Recursos normales del backend (application.properties, etc.) -->
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+            <!-- Empaqueta el frontend estático (docs/*.html, css/, js/, imagenes/, videos/)
+                 dentro del jar en /static, para que Spring Boot lo sirva por su
+                 servidor Tomcat embebido en la misma URL que la API. No requiere
+                 mover ningún archivo del frontend: se toman tal cual están. -->
+            <resource>
+                <directory>${project.basedir}</directory>
+                <targetPath>static</targetPath>
+                <includes>
+                    <include>index.html</include>
+                    <include>admin.html</include>
+                    <include>css/**</include>
+                    <include>js/**</include>
+                    <include>imagenes/**</include>
+                    <include>videos/**</include>
+                </includes>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

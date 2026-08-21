@@ -2,7 +2,17 @@
    MAIN JAVASCRIPT - SURCO JUAN PALMA PLATAFORMA WEB
    ========================================================================== */
 
-const API_BASE_URL = window.SURCO_API_BASE_URL || 'http://localhost:8080';
+// Si window.SURCO_API_BASE_URL está definido explícitamente (ej. GitHub Pages
+// apuntando a un backend en otro dominio), se respeta ese valor.
+// Si no, y la página se sirve desde uno de los puertos típicos de un
+// servidor estático local (python -m http.server, Live Server, etc.), se
+// asume que el backend corre aparte en localhost:8080.
+// En cualquier otro caso (ej. Azure App Service sirviendo el mismo .jar
+// que expone la API), se usa cadena vacía = mismo origen que la página.
+const LOCAL_STATIC_DEV_PORTS = ['8000', '5500', '5173'];
+const API_BASE_URL = window.SURCO_API_BASE_URL !== undefined
+  ? window.SURCO_API_BASE_URL
+  : (LOCAL_STATIC_DEV_PORTS.includes(window.location.port) ? 'http://localhost:8080' : '');
 
 document.addEventListener('DOMContentLoaded', () => {
 

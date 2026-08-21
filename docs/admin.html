@@ -113,7 +113,10 @@
 </div>
 
 <script>
-const API_BASE_URL = window.SURCO_API_BASE_URL || 'http://localhost:8080';
+const LOCAL_STATIC_DEV_PORTS = ['8000', '5500', '5173'];
+const API_BASE_URL = window.SURCO_API_BASE_URL !== undefined
+  ? window.SURCO_API_BASE_URL
+  : (LOCAL_STATIC_DEV_PORTS.includes(window.location.port) ? 'http://localhost:8080' : '');
 
 const loginScreen = document.getElementById('login-screen');
 const panelScreen = document.getElementById('panel-screen');

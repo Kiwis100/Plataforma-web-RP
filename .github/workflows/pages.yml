@@ -1,11 +1,11 @@
 name: Deploy Frontend a GitHub Pages
 
 # Se ejecuta automáticamente cada vez que se sube (push) código a la rama
-# "main" que afecte la carpeta docs/. Ajusta si usas otro nombre de rama.
+# "develop" que afecte la carpeta docs/ (única rama que se usa en este proyecto).
 on:
   push:
     branches:
-      - main
+      - develop
     paths:
       - "docs/**"
       - "!docs/src/**"

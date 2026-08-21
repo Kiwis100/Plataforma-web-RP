@@ -1,0 +1,59 @@
+name: Deploy a Azure App Service (swcap-p-renovacion-frontend-app)
+
+# Se activa con cada push a "develop" que toque el proyecto de docs/
+# (el Federated Credential en Entra ID está configurado exactamente para
+# esta rama: repo:Kiwis100/Plataforma-web-RP:ref:refs/heads/develop).
+on:
+  push:
+    branches:
+      - develop
+    paths:
+      - "docs/**"
+  workflow_dispatch: # permite lanzarlo a mano desde la pestaña Actions
+
+# Necesario para autenticarse en Azure vía OIDC (sin client secret).
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  APP_NAME: ${{ vars.AZURE_APP_SERVICE_NAME }} # swcap-p-renovacion-frontend-app
+  WORKING_DIR: docs
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar el código
+        uses: actions/checkout@v4
+
+      - name: Configurar Java 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+          cache-dependency-path: ${{ env.WORKING_DIR }}/pom.xml
+
+      - name: Compilar (el .jar incluye el frontend estático empaquetado)
+        working-directory: ${{ env.WORKING_DIR }}
+        run: mvn -B clean package -DskipTests
+
+      - name: Iniciar sesión en Azure (OIDC, sin client secret)
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Desplegar en Azure App Service
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: ${{ env.APP_NAME }}
+          package: ${{ env.WORKING_DIR }}/target/backend-plataforma.jar
+
+      - name: Verificar que el sitio responde
+        run: |
+          echo "Esperando a que la app arranque..."
+          sleep 40
+          curl -f "https://${{ env.APP_NAME }}.azurewebsites.net/actuator/health" || exit 1
