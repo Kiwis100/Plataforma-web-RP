@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Juan Palma | Alcaldía Santiago de Surco 2027 - Plataforma de Campaña</title>
+  <meta name="description" content="Plataforma oficial de campaña de Juan Palma para Santiago de Surco." />
+  
+  <!-- Google Fonts: Outfit (Encabezados) + Inter (Cuerpo) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+  
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <!-- Canvas Confetti CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+  <!-- ==================== HEADER & NAVBAR ==================== -->
+  <header class="navbar-fixed">
+    <nav class="container navbar-container">
+      <a href="#inicio" class="nav-brand">
+        <div class="nav-brand-logo">
+          <img src="imagenes/Logo-RP.png" alt="Logo Partido Político Nacional" />
+        </div>
+      </a>
+
+      <ul class="nav-menu" id="nav-menu">
+        <li><a href="#inicio" class="nav-link">Inicio</a></li>
+        <li><a href="#quien-es" class="nav-link">Quién Es</a></li>
+        <li><a href="#propuestas" class="nav-link">Propuestas</a></li>
+        <li><a href="#mapa-surco" class="nav-link">Mapa de Problemas</a></li>
+        <li><a href="#agenda" class="nav-link">Agenda</a></li>
+        <li><a href="#plan-gobierno" class="nav-link">Plan de Gobierno</a></li>
+        <li><a href="#noticias" class="nav-link">Noticias</a></li>
+
+        <li class="nav-buttons">
+          <button class="btn btn-outline-gold" id="btn-open-surcoia">
+            <i data-lucide="bot"></i>
+            <span>SurcoIA</span>
+          </button>
+
+          <button class="btn btn-primary" id="btn-open-voluntariado">
+            <i data-lucide="heart"></i>
+            <span>Personero</span>
+          </button>
+        </li>
+      </ul>
+
+      <button class="mobile-menu-btn" id="mobile-toggle" aria-label="Abrir Menú" aria-expanded="false" aria-controls="nav-menu">
+        <i data-lucide="menu"></i>
+      </button>
+    </nav>
+
+    <div class="nav-overlay" id="nav-overlay"></div>
+  </header>
+
+  <!-- ==================== HERO SECTION ==================== -->
+  <section id="inicio" class="hero-wrapper">
+    <div class="hero-bg-shapes">
+      <div class="hero-glow-1"></div>
+      <div class="hero-glow-2"></div>
+    </div>
+
+    <div class="container hero-grid">
+      <div>
+        <div class="badge badge-gold">
+          <i data-lucide="sparkles"></i>
+          <span>Una nueva era para Santiago de Surco</span>
+        </div>
+
+        <h1 class="hero-title">
+          Lo Mejor <br />
+          <span class="hero-title-highlight">Está por Llegar</span>
+        </h1>
+
+        <p class="hero-subtitle">
+          <strong>Juan Palma</strong>: un vecino de Surco que decidió dar un paso al frente.
+          Padre de familia, empresario, deportista y surcano de toda la vida, con más de 14 años
+          recorriendo cada sector de nuestro distrito.
+        </p>
+
+        <div class="hero-cta-group">
+          <button class="btn btn-primary" id="hero-btn-chat">
+            <i data-lucide="message-square-text"></i>
+            <span>Pregúntale a SurcoIA</span>
+          </button>
+
+          <a href="#quien-es" class="btn btn-outline-white">
+            <i data-lucide="user"></i>
+            <span>Conoce a Juan Palma</span>
+          </a>
+        </div>
+
+        <div class="hero-stats-row">
+          <div class="stat-item">
+            <h3>40</h3>
+            <p>Años, Listo para Servir a Surco</p>
+          </div>
+          <div class="stat-item">
+            <h3>14+</h3>
+            <p>Años de Trabajo Vecinal</p>
+          </div>
+          <div class="stat-item">
+            <h3>6</h3>
+            <p>Ejes de Gobierno</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-candidate-card">
+        <img 
+          src="imagenes/juan-Palma.jpg" 
+          alt="Juan Palma - Candidato a Alcalde de Surco" 
+          class="candidate-img"
+        />
+
+        <div class="candidate-badge-overlay">
+          <div class="candidate-badge-title">
+            <i data-lucide="circle-check-big" style="color: var(--accent-gold);"></i>
+            <strong>Juan Palma</strong>
+          </div>
+          <p>Candidato a la Alcaldía de Santiago de Surco 2027</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== QUIÉN ES JUAN PALMA ==================== -->
+  <section id="quien-es" class="section-padding bg-white">
+    <div class="container">
+      <div class="section-header">
+        <span class="badge badge-navy">Conóceme</span>
+        <h2>¿Quién es Juan Palma?</h2>
+        <p>Un vecino de Surco que decidió dar un paso al frente.</p>
+      </div>
+
+      <div class="quien-es-grid">
+        <div class="quien-es-photo-wrap">
+          <img src="imagenes/juan-Palma.jpg" alt="Juan Palma - Candidato a Alcalde de Surco" class="quien-es-photo" />
+        </div>
+
+        <div>
+          <p class="quien-es-tagline">Padre de familia, empresario, deportista y surcano de toda la vida.</p>
+
+          <ul class="bio-timeline">
+            <li>
+              <div class="bio-icon-bg"><i data-lucide="school"></i></div>
+              <p>Estudié en el colegio <strong>Alcides Vigo Hurtado</strong> de Santiago de Surco.</p>
+            </li>
+            <li>
+              <div class="bio-icon-bg"><i data-lucide="graduation-cap"></i></div>
+              <p>Licenciado en <strong>Administración y Gerencia de Empresas</strong> por la Universidad Ricardo Palma.</p>
+            </li>
+            <li>
+              <div class="bio-icon-bg"><i data-lucide="award"></i></div>
+              <p>Maestría culminada en <strong>Gestión Pública</strong> y diplomados en Administración de Gobiernos Locales y Regionales.</p>
+            </li>
+            <li>
+              <div class="bio-icon-bg"><i data-lucide="building-2"></i></div>
+              <p>Experiencia en gestión pública: trabajó en las municipalidades de <strong>Cieneguilla</strong> y del <strong>Rímac</strong>.</p>
+            </li>
+            <li>
+              <div class="bio-icon-bg"><i data-lucide="activity"></i></div>
+              <p>Empresario, deportista y actualmente cursa una segunda carrera profesional en <strong>Ingeniería Informática</strong>.</p>
+            </li>
+          </ul>
+
+          <div class="bio-quote-box">
+            <i data-lucide="quote"></i>
+            <p>"A mis 40 años, estoy preparado para tomar las riendas de nuestro distrito y convertir a Surco en un referente de seguridad, orden y calidad de vida."</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="values-card">
+        <h3>Aprendí desde niño que servir a los demás es un deber.</h3>
+
+        <div class="values-grid">
+          <div class="value-item">
+            <div class="value-icon-bg"><i data-lucide="shield"></i></div>
+            <p><strong>Mi padre</strong>, oficial de la Policía Nacional del Perú, fue condecorado como Héroe de la Policía por la lucha contra el terrorismo.</p>
+          </div>
+
+          <div class="value-item">
+            <div class="value-icon-bg"><i data-lucide="heart-handshake"></i></div>
+            <p><strong>Mi madre</strong>, licenciada en Trabajo Social, dedicó más de 30 años de su vida al Hospital María Auxiliadora, ayudando a quienes más lo necesitaban.</p>
+          </div>
+
+          <div class="value-item">
+            <div class="value-icon-bg"><i data-lucide="users"></i></div>
+            <p><strong>Mi familia</strong>, el regalo más valioso que Dios me ha dado. María Cristina y mis 3 hijos son mi mayor orgullo y la fuerza que me impulsa a trabajar para que se sientan orgullosos del padre que tienen.</p>
+          </div>
+        </div>
+
+        <p class="values-footer">
+          Durante más de <strong>14 años</strong> he recorrido cada sector de Surco realizando actividades sociales, deportivas, médicas y de apoyo a las familias que más lo necesitaban.
+          Los valores que aprendí en mi hogar son los mismos con los que quiero servir a Santiago de Surco.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== PROPUESTAS POR EJES ==================== -->
+  <section id="propuestas" class="section-padding bg-white">
+    <div class="container">
+      <div class="section-header">
+        <span class="badge badge-navy">Mi Compromiso con Surco</span>
+        <h2>Propuestas de Juan Palma para Surco</h2>
+        <p>Estos son los 6 ejes para recuperar el Surco que todos queremos.</p>
+      </div>
+
+      <div class="proposals-nav" id="proposals-nav">
+        <!-- Renderizado dinámico desde JS -->
+      </div>
+
+      <div class="proposal-detail-box" id="proposal-detail-box">
+        <!-- Detalle dinámico desde JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== MAPA DE PROBLEMAS DE SURCO ==================== -->
+  <section id="mapa-surco" class="section-padding bg-light">
+    <div class="container">
+      <div class="section-header">
+        <span class="badge badge-gold">Basado en el Plan de Gobierno (137 páginas)</span>
+        <h2>Los Problemas de Surco y las Soluciones de Juan Palma</h2>
+        <p>Los 9 ejes estratégicos identificados en el Plan de Gobierno, con el programa que propone Juan Palma y cómo se implementará cada uno.</p>
+      </div>
+
+      <div class="map-container-grid">
+        <aside class="sectors-sidebar">
+          <h3>
+            <i data-lucide="funnel" style="color: var(--primary-navy);"></i>
+            <span>Ejes Estratégicos</span>
+          </h3>
+
+          <div id="sectors-list">
+            <!-- Sectores desde JS -->
+          </div>
+
+          <div class="mt-4 pt-3 border-top">
+            <button class="btn btn-primary w-100" id="btn-open-report-modal">
+              <i data-lucide="circle-plus"></i>
+              <span>Reportar una Incidencia</span>
+            </button>
+          </div>
+        </aside>
+
+        <div>
+          <div class="issues-header-bar">
+            <span id="issues-count-text">Mostrando los 9 problemas estratégicos</span>
+            <div class="badges-group">
+              <span class="badge-status badge-priorizado">Plan de Gobierno</span>
+              <span class="badge-status badge-diagnostico">Reporte Vecinal</span>
+            </div>
+          </div>
+
+          <div id="issues-list-container">
+            <!-- Tarjetas de problemas desde JS -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== AGENDA DEL CANDIDATO ==================== -->
+  <section id="agenda" class="section-padding bg-white">
+    <div class="container">
+      <div class="section-header">
+        <span class="badge badge-navy">Transparencia & Cercanía</span>
+        <h2>Agenda del Candidato Juan Palma</h2>
+        <p>Actividades, caminatas de escucha y conversatorios vecinales en Santiago de Surco.</p>
+      </div>
+
+      <div class="grid-responsive-3" id="agenda-grid">
+        <!-- Eventos dinámicos desde JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== PLAN DE GOBIERNO PDF ==================== -->
+  <section id="plan-gobierno" class="section-padding bg-dark text-white">
+    <div class="container">
+      <div class="section-header">
+        <span class="badge badge-gold">Mi Compromiso con Surco</span>
+        <h2 class="text-white">Plan de Gobierno Surco 2027-2030</h2>
+        <p class="text-light">Estos son los 6 ejes para recuperar el Surco que todos queremos.</p>
+      </div>
+
+      <div class="plan-grid">
+        <div>
+          <h3 class="plan-title">Nuestros 6 Ejes de Gobierno</h3>
+
+          <div class="plan-chapter-card">
+            <h4 style="color: var(--accent-gold);">1. Mejor Seguridad</h4>
+            <p>Calles más seguras y tranquilas para nuestras familias.</p>
+          </div>
+
+          <div class="plan-chapter-card">
+            <h4 style="color: var(--accent-green);">2. Recuperemos los Parques Más Bonitos del Perú</h4>
+            <p>Todo Surco merece parques bonitos e iluminados para las familias.</p>
+          </div>
+
+          <div class="plan-chapter-card">
+            <h4 style="color: var(--accent-amber);">3. Mejores Pistas y Veredas</h4>
+            <p>Calles en buen estado, limpias y señalizadas.</p>
+          </div>
+
+          <div class="plan-chapter-card">
+            <h4 style="color: var(--accent-purple);">4. Más Deporte para Niños y Jóvenes</h4>
+            <p>Oportunidades para crecer sanos y con valores.</p>
+          </div>
+
+          <div class="plan-chapter-card">
+            <h4 style="color: #EC4899;">5. Salud de Calidad</h4>
+            <p>Un sistema de salud con Urgencias 24H. Un Hospital de la Solidaridad y una flota de ambulancias cerca de los vecinos.</p>
+          </div>
+
+          <div class="plan-chapter-card">
+            <h4 style="color: #38BDF8;">6. Una Municipalidad que Vuelva a Escuchar al Vecino</h4>
+            <p>Cercana, transparente y al servicio de todos.</p>
+          </div>
+        </div>
+
+        <div class="plan-download-box">
+          <i data-lucide="file-text" class="plan-icon"></i>
+          <h4>Conoce Nuestro Plan de Gobierno</h4>
+          <p>Escanea el código QR o haz clic en el botón para ver el documento completo con nuestras propuestas.</p>
+
+          <a
+            href="https://drive.google.com/file/d/1Et0kCK2Ap2n_-xogOSCsnfWSQRv25xzm/view?usp=drive_link"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="btn btn-primary w-100"
+            id="btn-download-pdf"
+          >
+            <i data-lucide="download"></i>
+            <span id="pdf-btn-text">Ver Plan de Gobierno</span>
+          </a>
+
+          <p class="text-light mt-3" style="font-size: 0.85rem;">Se abrirá en una nueva pestaña de Google Drive.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== NOTICIAS & VIDEOS ==================== -->
+  <section id="noticias" class="section-padding bg-white">
+    <div class="container">
+      <div class="section-header">
+        <span class="badge badge-navy">Actualidad & Prensa</span>
+        <h2>Noticias y Comunicados de Campaña</h2>
+        <p>Mantente informado con los comunicados oficiales y actividades de Juan Palma.</p>
+      </div>
+
+      <div class="grid-responsive-3" id="news-grid">
+        <!-- Noticias desde JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- VIDEOS -->
+  <section class="section-padding bg-light">
+    <div class="container">
+      <div class="section-header">
+        <span class="badge badge-gold">Multimedia & Mensajes</span>
+        <h2>Videos de Campaña</h2>
+        <p>Conoce las propuestas explicadas directamente por Juan Palma en videos cortos.</p>
+      </div>
+
+      <div class="grid-responsive-3" id="videos-grid">
+        <!-- Videos desde JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== FOOTER ==================== -->
+  <footer class="footer-wrapper">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <div class="nav-brand mb-3">
+            <div class="nav-brand-logo">
+              <img src="imagenes/Logo-RP.png" alt="Logo Partido Político Nacional" />
+            </div>
+            <div class="nav-brand-text">
+              <h1 class="text-white">JUAN PALMA</h1>
+              <span>ALCALDÍA DE SURCO 2027</span>
+            </div>
+          </div>
+          <p class="text-muted">Plataforma cívica web oficial del candidato Juan Palma para las elecciones municipales de Santiago de Surco.</p>
+
+          <div class="social-icons-row mt-3">
+            <a href="#" class="social-icon-link" aria-label="Facebook"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M9.101 23.691v-7.98H6.627v-3.667h2.474v-1.58c0-4.085 1.848-5.978 5.858-5.978.401 0 .955.042 1.468.103a8.68 8.68 0 0 1 1.141.195v3.325a8.623 8.623 0 0 0-.653-.036 26.805 26.805 0 0 0-.733-.009c-.707 0-1.259.096-1.675.309a1.686 1.686 0 0 0-.679.622c-.258.42-.374.995-.374 1.752v1.297h3.919l-.386 2.103-.287 1.564h-3.246v8.245C19.396 23.238 24 18.179 24 12.044c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.628 3.874 10.35 9.101 11.647Z"/></svg></a>
+            <a href="#" class="social-icon-link" aria-label="Instagram"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M12 0C8.74 0 8.333.014 7.053.072 5.775.131 4.905.333 4.14.63c-.789.306-1.459.717-2.126 1.384S.935 3.35.63 4.14C.333 4.905.131 5.775.072 7.053.014 8.333 0 8.74 0 12s.014 3.667.072 4.947c.06 1.277.261 2.148.558 2.913.306.788.717 1.459 1.384 2.126.667.666 1.336 1.079 2.126 1.384.766.296 1.636.499 2.913.558C8.333 23.986 8.74 24 12 24s3.667-.014 4.947-.072c1.277-.06 2.148-.262 2.913-.558.788-.306 1.459-.718 2.126-1.384.666-.667 1.079-1.335 1.384-2.126.296-.765.499-1.636.558-2.913.058-1.28.072-1.687.072-4.947s-.014-3.667-.072-4.947c-.06-1.277-.262-2.149-.558-2.913-.306-.789-.718-1.459-1.384-2.126C21.319 1.347 20.651.935 19.86.63c-.765-.297-1.636-.499-2.913-.558C15.667.014 15.26 0 12 0zm0 2.16c3.203 0 3.585.016 4.85.071 1.17.055 1.805.249 2.227.415.562.217.96.477 1.382.896.419.42.679.819.896 1.381.164.422.36 1.057.413 2.227.057 1.266.07 1.646.07 4.85s-.015 3.585-.074 4.85c-.061 1.17-.256 1.805-.421 2.227-.224.562-.479.96-.899 1.382-.419.419-.824.679-1.38.896-.42.164-1.065.36-2.235.413-1.274.057-1.649.07-4.859.07-3.211 0-3.586-.015-4.859-.074-1.171-.061-1.816-.256-2.236-.421-.569-.224-.96-.479-1.379-.899-.421-.419-.69-.824-.9-1.38-.165-.42-.359-1.065-.42-2.235-.045-1.26-.061-1.649-.061-4.844 0-3.196.016-3.586.061-4.861.061-1.17.255-1.814.42-2.234.21-.57.479-.96.9-1.381.419-.419.81-.689 1.379-.898.42-.166 1.051-.361 2.221-.421 1.275-.045 1.65-.06 4.859-.06l.045.03zm0 3.678a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm7.846-10.405a1.44 1.44 0 1 1-2.88 0 1.44 1.44 0 0 1 2.88 0z"/></svg></a>
+            <a href="#" class="social-icon-link" aria-label="TikTok"><i data-lucide="music-2"></i></a>
+          </div>
+        </div>
+
+        <div>
+          <h4 class="footer-heading">Navegación Rápida</h4>
+          <ul class="footer-links">
+            <li><a href="#inicio">Inicio</a></li>
+            <li><a href="#quien-es">Quién Es Juan Palma</a></li>
+            <li><a href="#propuestas">Propuestas por Eje</a></li>
+            <li><a href="#mapa-surco">Mapa de Problemas de Surco</a></li>
+            <li><a href="#agenda">Agenda del Candidato</a></li>
+            <li><a href="#plan-gobierno">Plan de Gobierno 2027-2030</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="footer-heading">Nuestros 6 Ejes</h4>
+          <ul class="footer-links">
+            <li>🛡️ Mejor Seguridad</li>
+            <li>🌳 Parques Más Bonitos del Perú</li>
+            <li>🛣️ Mejores Pistas y Veredas</li>
+            <li>⚽ Más Deporte para Niños y Jóvenes</li>
+            <li>🏥 Salud de Calidad</li>
+            <li>🏛️ Municipalidad que Escuche al Vecino</li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="footer-heading">Participe en la Campaña</h4>
+          <p class="text-muted mb-3">Sumamos a todos los vecinos comprometidos con el futuro de Santiago de Surco.</p>
+          <button class="btn btn-primary w-100 mb-2" id="footer-btn-volunteer">
+            <i data-lucide="heart"></i>
+            <span>Inscribirme como Personero</span>
+          </button>
+          <p class="text-muted" style="font-size: 0.85rem;">
+            <i data-lucide="phone" style="width: 14px; height: 14px; vertical-align: -2px;"></i>
+            WhatsApp: 907 027 516
+          </p>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>© 2026 Juan Palma por Santiago de Surco. Todos los derechos reservados.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ==================== CHATBOT CON IA ("SurcoIA") ==================== -->
+  <button class="ai-chat-toggle-btn" id="ai-chat-toggle-btn" title="Abrir Chatbot SurcoIA">
+    <i data-lucide="bot"></i>
+  </button>
+
+  <div class="ai-chatbot-modal hidden" id="ai-chatbot-modal">
+    <div class="ai-chat-header">
+      <div class="ai-chat-title">
+        <div class="ai-avatar"><i data-lucide="bot"></i></div>
+        <div>
+          <h4>SurcoIA - Asistente de Campaña</h4>
+          <span class="online-status">
+            <span class="green-dot"></span> En línea | Juan Palma 2027
+          </span>
+        </div>
+      </div>
+
+      <button class="close-btn" id="btn-close-ai-chat">
+        <i data-lucide="x"></i>
+      </button>
+    </div>
+
+    <div class="ai-chat-body" id="ai-chat-body">
+      <div class="chat-bubble chat-bubble-ai">
+        ¡Hola! Soy <strong>SurcoIA</strong>, el asistente inteligente de la campaña de <strong>Juan Palma</strong>.<br/><br/>
+        ¿En qué propuesta o tema distrital te puedo ayudar hoy? Puedes preguntarme directamente o elegir una consulta rápida.
+      </div>
+    </div>
+
+    <div class="quick-prompts-bar">
+      <button class="quick-prompt-btn" data-query="¿Quién es Juan Palma?">¿Quién es Juan Palma?</button>
+      <button class="quick-prompt-btn" data-query="¿Qué propone Juan Palma para seguridad?">¿Qué propone Juan Palma para seguridad?</button>
+      <button class="quick-prompt-btn" data-query="¿Cómo denunciar un parque abandonado?">¿Cómo denunciar un parque abandonado?</button>
+      <button class="quick-prompt-btn" data-query="¿Cómo puedo ser voluntario de campaña?">¿Cómo ser voluntario?</button>
+      <button class="quick-prompt-btn" data-query="¿Dónde puedo ver el Plan de Gobierno?">¿Plan de Gobierno?</button>
+    </div>
+
+    <form class="ai-chat-input-row" id="ai-chat-form">
+      <input type="text" id="ai-chat-input" class="ai-chat-input" placeholder="Escribe tu pregunta vecinal aquí..." required />
+      <button type="submit" class="btn btn-primary icon-btn">
+        <i data-lucide="send"></i>
+      </button>
+    </form>
+  </div>
+
+  <!-- ==================== MODAL REGISTRO DE VOLUNTARIOS ==================== -->
+  <div class="modal-backdrop hidden" id="volunteer-modal">
+    <div class="modal-content-card">
+      <button class="close-btn modal-close-pos" id="btn-close-volunteer">
+        <i data-lucide="x"></i>
+      </button>
+
+      <div class="volunteer-header">
+        <div class="heart-icon-bg"><i data-lucide="heart"></i></div>
+        <div>
+          <h3>Inscripción de Personeros por Surco</h3>
+          <span class="text-muted">Únete al cambio positivo en tu manzana o sector</span>
+        </div>
+      </div>
+
+      <form id="volunteer-form" class="mt-4">
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label">Nombres:</label>
+            <input type="text" id="vol-firstname" required class="form-control only-letters" placeholder="Ej. María Elena" />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Apellidos:</label>
+            <input type="text" id="vol-lastname" required class="form-control only-letters" placeholder="Ej. Rodríguez Pérez" />
+          </div>
+        </div>
+
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label">DNI:</label>
+            <input type="text" id="vol-dni" required maxlength="8" pattern="[0-9]{8}" inputmode="numeric" class="form-control only-digits" placeholder="8 dígitos" />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Teléfono / WhatsApp:</label>
+            <input type="tel" id="vol-phone" required maxlength="9" pattern="[0-9]{9}" inputmode="numeric" class="form-control only-digits" placeholder="Ej. 907027516 (9 dígitos)" />
+          </div>
+        </div>
+
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label">Correo Electrónico:</label>
+            <input type="email" id="vol-email" required class="form-control" placeholder="vecino@surco.pe" />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Tu Sector en Surco:</label>
+            <select id="vol-sector" class="form-control">
+              <option value="sector-1">Sector 1: Chacarilla & Valle Hermoso</option>
+              <option value="sector-2">Sector 2: Monterrico & Las Casuarinas</option>
+              <option value="sector-3">Sector 3: Higuereta & Los Rosales</option>
+              <option value="sector-4">Sector 4: Surco Viejo & Cercado</option>
+              <option value="sector-5">Sector 5: Próceres & Sagitario</option>
+              <option value="sector-6">Sector 6: Precursores & Bolivariano</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Rol de Personero Preferido:</label>
+          <select id="vol-role" class="form-control">
+            <option value="Coordinador Vecinal de Manzana">Coordinador Vecinal de Manzana</option>
+            <option value="Brigadista Digital / Redes">Brigadista Digital / Redes</option>
+            <option value="Fiscal de Mesa Electoral">Fiscal de Mesa Electoral</option>
+            <option value="Promotor de Propuestas">Promotor de Propuestas</option>
+          </select>
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100 mt-2">
+          <i data-lucide="user-check"></i>
+          <span>Confirmar mi Registro como Personero</span>
+        </button>
+      </form>
+
+      <div class="volunteer-success-msg hidden" id="volunteer-success-msg">
+        <i data-lucide="circle-check-big" class="success-icon"></i>
+        <h3>¡Bienvenido al Equipo de Juan Palma!</h3>
+        <p id="vol-success-text">Nos pondremos en contacto contigo vía WhatsApp para entregarte tu kit de personero.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL REPORTAR PROBLEMA VECINAL ==================== -->
+  <div class="modal-backdrop hidden" id="report-modal">
+    <div class="modal-content-card">
+      <button class="close-btn modal-close-pos" id="btn-close-report">
+        <i data-lucide="x"></i>
+      </button>
+
+      <h3>Reportar una Incidencia Vecinal</h3>
+        <p class="text-muted mb-4">Tu reporte se vinculará a uno de los 9 ejes del Plan de Gobierno y será evaluado por el equipo técnico de Juan Palma.</p>
+
+      <form id="report-issue-form">
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label">Nombres:</label>
+            <input type="text" id="report-firstname" required class="form-control only-letters" placeholder="Ej. Carlos" />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Apellidos:</label>
+            <input type="text" id="report-lastname" required class="form-control only-letters" placeholder="Ej. Mendoza Ruiz" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">DNI:</label>
+          <input type="text" id="report-dni" required maxlength="8" pattern="[0-9]{8}" inputmode="numeric" class="form-control only-digits" placeholder="8 dígitos" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Título de la Incidencia:</label>
+          <input type="text" id="report-title" required class="form-control" placeholder="Ej. Parque abandonado con luces quemadas en Los Rosales" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Eje del Plan de Gobierno relacionado:</label>
+          <select id="report-sector" class="form-control">
+            <option value="seguridad">Seguridad Ciudadana</option>
+            <option value="movilidad">Movilidad Urbana</option>
+            <option value="ambiente">Medio Ambiente</option>
+            <option value="limpieza">Limpieza Pública</option>
+            <option value="salud">Salud</option>
+            <option value="adulto-mayor">Adulto Mayor</option>
+            <option value="emprendimiento">Emprendimiento</option>
+            <option value="gobierno-digital">Gobierno Digital</option>
+            <option value="transparencia">Transparencia</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Ubicación Exacta / Referencia:</label>
+          <input type="text" id="report-location" required class="form-control only-location" placeholder="Ej. Calle Los Tulipanes cdra. 3" />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Descripción del Problema:</label>
+          <textarea id="report-description" rows="3" required class="form-control" placeholder="Describe qué sucede y desde cuándo..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Foto o Video de la Incidencia (opcional):</label>
+          <input type="file" id="report-attachment" class="form-control" accept="image/jpeg,image/jpg,image/png,image/webp,video/mp4,video/quicktime,video/webm" />
+          <span class="text-muted" style="font-size: 0.8rem;">Formatos permitidos: JPG, PNG, WEBP, MP4, MOV, WEBM. Máximo 25MB.</span>
+          <span class="admin-error" id="report-attachment-error" style="display:none; color:#DC2626; font-size:0.8rem;"></span>
+        </div>
+
+        <div class="flex-end-gap">
+          <button type="button" class="btn btn-outline" id="btn-cancel-report">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Enviar Reporte</button>
+        </div>
+      </form>
+
+      <div class="report-success-msg hidden" id="report-success-msg">
+        <i data-lucide="circle-check-big" class="success-icon"></i>
+        <h3>¡Reporte Registrado con Éxito!</h3>
+        <p>Gracias por ayudarnos a mapear y recuperar cada rincón de Surco.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts JS -->
+  <script src="js/proposalsData.js"></script>
+  <script src="js/surcoIssuesData.js"></script>
+  <script src="js/aiKnowledgeBase.js"></script>
+  <script src="js/agendaData.js"></script>
+  <!-- Para publicar en GitHub Pages con un backend real, descomenta y
+       reemplaza con la URL pública de tu backend (ver README.md):
+  <script>window.SURCO_API_BASE_URL = "https://tu-backend.azurewebsites.net";</script>
+  -->
+  <script src="js/main.js"></script>
+  <script>
+    // Inicializar Lucide Icons
+    lucide.createIcons();
+  </script>
+</body>
+</html>

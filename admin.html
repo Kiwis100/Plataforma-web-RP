@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Panel de Administración — Juan Palma</title>
+<meta name="robots" content="noindex, nofollow" />
+<link rel="stylesheet" href="css/styles.css" />
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+  body { background: #F1F5F9; }
+  .admin-header {
+    background: var(--primary-navy); color: #fff; padding: 1.5rem 0;
+  }
+  .admin-header .container { display: flex; justify-content: space-between; align-items: center; }
+  .admin-header h1 { font-size: 1.3rem; margin: 0; }
+  .admin-header p { color: rgba(255,255,255,0.7); font-size: 0.85rem; margin: 0; }
+  .admin-main { max-width: 1100px; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
+  .admin-tabs { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+  .admin-tab-btn {
+    padding: 0.6rem 1.1rem; border-radius: 999px; border: 1px solid var(--border-light);
+    background: #fff; cursor: pointer; font-weight: 600; font-size: 0.9rem; color: var(--text-muted);
+  }
+  .admin-tab-btn.active { background: var(--primary-navy); color: #fff; border-color: var(--primary-navy); }
+  .admin-card {
+    background: #fff; border-radius: var(--radius-md); border: 1px solid var(--border-light);
+    box-shadow: var(--shadow-sm); padding: 1.25rem; margin-bottom: 1rem;
+  }
+  .admin-card-row { display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; align-items: flex-start; }
+  .admin-card h3 { font-size: 1.05rem; margin: 0 0 0.3rem; color: var(--primary-navy); }
+  .admin-meta { font-size: 0.82rem; color: var(--text-muted); margin-bottom: 0.5rem; }
+  .admin-badge {
+    display: inline-block; font-size: 0.72rem; font-weight: 700; padding: 0.2rem 0.6rem;
+    border-radius: 999px; text-transform: uppercase; letter-spacing: 0.03em;
+  }
+  .badge-pending { background: #FEF3C7; color: #92400E; }
+  .badge-approved { background: #D1FAE5; color: #065F46; }
+  .badge-rejected { background: #FEE2E2; color: #991B1B; }
+  .admin-actions { display: flex; gap: 0.5rem; }
+  .admin-btn {
+    border: none; border-radius: 8px; padding: 0.5rem 0.9rem; font-weight: 600;
+    font-size: 0.85rem; cursor: pointer; display: inline-flex; align-items: center; gap: 0.35rem;
+  }
+  .admin-btn-approve { background: #059669; color: #fff; }
+  .admin-btn-reject { background: #DC2626; color: #fff; }
+  .admin-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .admin-table { width: 100%; border-collapse: collapse; background: #fff; border-radius: var(--radius-md); overflow: hidden; }
+  .admin-table th, .admin-table td { text-align: left; padding: 0.7rem 0.9rem; font-size: 0.85rem; border-bottom: 1px solid var(--border-light); }
+  .admin-table th { background: #F8FAFC; color: var(--text-muted); font-weight: 700; text-transform: uppercase; font-size: 0.72rem; }
+  .admin-empty { text-align: center; padding: 3rem 1rem; color: var(--text-muted); }
+  .admin-login-wrap { max-width: 380px; margin: 12vh auto; }
+  .admin-login-card { background: #fff; border-radius: var(--radius-md); padding: 2rem; box-shadow: var(--shadow-sm); }
+  .admin-login-card h2 { font-size: 1.2rem; margin-bottom: 0.3rem; color: var(--primary-navy); }
+  .admin-login-card p { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.25rem; }
+  .admin-error { color: #DC2626; font-size: 0.85rem; margin-top: 0.6rem; display: none; }
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+
+<!-- ==================== LOGIN ==================== -->
+<div class="admin-login-wrap" id="login-screen">
+  <div class="admin-login-card">
+    <h2>Panel de Administración</h2>
+    <p>Ingresa la clave administrativa (ADMIN_API_KEY) para gestionar reportes y personeros.</p>
+    <input type="password" id="admin-key-input" class="form-control" placeholder="Clave administrativa" />
+    <button class="btn btn-primary w-100 mt-3" id="btn-login">
+      <i data-lucide="lock-open"></i>
+      <span>Ingresar</span>
+    </button>
+    <p class="admin-error" id="login-error">Clave incorrecta o backend no disponible.</p>
+  </div>
+</div>
+
+<!-- ==================== PANEL ==================== -->
+<div id="panel-screen" class="hidden">
+  <header class="admin-header">
+    <div class="container">
+      <div>
+        <h1>Panel de Administración</h1>
+        <p>Juan Palma — Alcaldía de Surco 2027</p>
+      </div>
+      <button class="btn btn-outline-white" id="btn-logout">
+        <i data-lucide="log-out"></i>
+        <span>Salir</span>
+      </button>
+    </div>
+  </header>
+
+  <main class="admin-main">
+    <div class="admin-tabs">
+      <button class="admin-tab-btn active" data-tab="pending">Reportes Pendientes</button>
+      <button class="admin-tab-btn" data-tab="approved">Reportes Aprobados</button>
+      <button class="admin-tab-btn" data-tab="rejected">Reportes Rechazados</button>
+      <button class="admin-tab-btn" data-tab="personeros">Personeros Registrados</button>
+      <button class="admin-tab-btn" id="btn-refresh" style="margin-left: auto;">
+        <i data-lucide="refresh-cw" style="width:14px;height:14px;vertical-align:-2px;"></i>
+        Actualizar
+      </button>
+    </div>
+
+    <div class="admin-card-row" style="margin-bottom: 1.25rem; align-items: center;">
+      <input type="text" id="search-input" class="form-control" style="max-width: 320px;" placeholder="Buscar por nombre o apellido..." />
+      <button class="admin-btn admin-btn-approve" id="btn-search"><i data-lucide="search"></i> Buscar</button>
+      <button class="admin-btn" id="btn-clear-search" style="background:#E2E8F0; color:var(--text-main);">Limpiar</button>
+    </div>
+
+    <div id="tab-pending"></div>
+    <div id="tab-approved" class="hidden"></div>
+    <div id="tab-rejected" class="hidden"></div>
+    <div id="tab-personeros" class="hidden"></div>
+  </main>
+</div>
+
+<script>
+const LOCAL_STATIC_DEV_PORTS = ['8000', '5500', '5173'];
+const API_BASE_URL = window.SURCO_API_BASE_URL !== undefined
+  ? window.SURCO_API_BASE_URL
+  : (LOCAL_STATIC_DEV_PORTS.includes(window.location.port) ? 'http://localhost:8080' : '');
+
+const loginScreen = document.getElementById('login-screen');
+const panelScreen = document.getElementById('panel-screen');
+const adminKeyInput = document.getElementById('admin-key-input');
+const loginError = document.getElementById('login-error');
+
+let allIssues = [];
+let allPersoneros = [];
+
+function getKey() {
+  return sessionStorage.getItem('surco_admin_key') || '';
+}
+
+async function apiGet(path) {
+  const res = await fetch(`${API_BASE_URL}${path}`, {
+    headers: { 'X-Admin-Key': getKey() }
+  });
+  if (res.status === 401) throw new Error('UNAUTHORIZED');
+  if (!res.ok) throw new Error('Error de red');
+  return res.json();
+}
+
+async function apiPut(path) {
+  const res = await fetch(`${API_BASE_URL}${path}`, {
+    method: 'PUT',
+    headers: { 'X-Admin-Key': getKey() }
+  });
+  if (res.status === 401) throw new Error('UNAUTHORIZED');
+  const data = await res.json();
+  if (!res.ok || data.success === false) throw new Error(data.error || 'Error al actualizar.');
+  return data;
+}
+
+async function login() {
+  const key = adminKeyInput.value.trim();
+  if (!key) return;
+  sessionStorage.setItem('surco_admin_key', key);
+  loginError.style.display = 'none';
+
+  try {
+    await apiGet('/api/issues');
+    loginScreen.classList.add('hidden');
+    panelScreen.classList.remove('hidden');
+    await cargarTodo();
+  } catch (err) {
+    sessionStorage.removeItem('surco_admin_key');
+    loginError.style.display = 'block';
+  }
+}
+
+document.getElementById('btn-login').addEventListener('click', login);
+adminKeyInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') login(); });
+
+document.getElementById('btn-logout').addEventListener('click', () => {
+  sessionStorage.removeItem('surco_admin_key');
+  panelScreen.classList.add('hidden');
+  loginScreen.classList.remove('hidden');
+  adminKeyInput.value = '';
+});
+
+document.getElementById('btn-refresh').addEventListener('click', cargarTodo);
+
+document.getElementById('btn-search').addEventListener('click', ejecutarBusqueda);
+document.getElementById('search-input').addEventListener('keydown', (e) => { if (e.key === 'Enter') ejecutarBusqueda(); });
+document.getElementById('btn-clear-search').addEventListener('click', () => {
+  document.getElementById('search-input').value = '';
+  cargarTodo();
+});
+
+async function ejecutarBusqueda() {
+  const q = document.getElementById('search-input').value.trim();
+  if (!q) { cargarTodo(); return; }
+
+  try {
+    const [issues, personeros] = await Promise.all([
+      apiGet(`/api/issues/search?q=${encodeURIComponent(q)}`),
+      apiGet(`/api/personeros/search?q=${encodeURIComponent(q)}`)
+    ]);
+    allIssues = issues;
+    allPersoneros = personeros;
+    renderIssues();
+    renderPersoneros();
+    if (window.lucide) lucide.createIcons();
+  } catch (err) {
+    alert('Error al buscar: ' + err.message);
+  }
+}
+
+document.querySelectorAll('.admin-tab-btn[data-tab]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.admin-tab-btn[data-tab]').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    ['pending', 'approved', 'rejected', 'personeros'].forEach(t => {
+      document.getElementById(`tab-${t}`).classList.toggle('hidden', t !== btn.dataset.tab);
+    });
+  });
+});
+
+async function cargarTodo() {
+  try {
+    const [issues, personeros] = await Promise.all([
+      apiGet('/api/issues'),
+      apiGet('/api/personeros')
+    ]);
+    allIssues = issues;
+    allPersoneros = personeros;
+    renderIssues();
+    renderPersoneros();
+    if (window.lucide) lucide.createIcons();
+  } catch (err) {
+    if (err.message === 'UNAUTHORIZED') {
+      alert('Tu clave ya no es válida. Vuelve a ingresar.');
+      document.getElementById('btn-logout').click();
+    } else {
+      alert('No se pudo conectar con el backend: ' + err.message);
+    }
+  }
+}
+
+function badgeFor(status) {
+  if (status === 'APPROVED') return '<span class="admin-badge badge-approved">Aprobado</span>';
+  if (status === 'REJECTED') return '<span class="admin-badge badge-rejected">Rechazado</span>';
+  return '<span class="admin-badge badge-pending">Pendiente</span>';
+}
+
+function issueCard(issue, showActions) {
+  const adjunto = issue.attachmentPath
+    ? (issue.attachmentType === 'VIDEO'
+        ? `<video src="${API_BASE_URL}/${issue.attachmentPath}" controls style="width:100%; max-height:260px; border-radius:8px; margin:0.5rem 0; background:#000;"></video>`
+        : `<img src="${API_BASE_URL}/${issue.attachmentPath}" alt="Adjunto" style="max-width:100%; max-height:260px; border-radius:8px; margin:0.5rem 0;" />`)
+    : '';
+
+  return `
+    <div class="admin-card" id="issue-${issue.id}">
+      <div class="admin-card-row">
+        <div>
+          <h3>${issue.title}</h3>
+          <div class="admin-meta">
+            Sector: <strong>${issue.sector}</strong> · Ubicación: ${issue.location}<br/>
+            Reportado por: <strong>${issue.reporterFirstName} ${issue.reporterLastName}</strong> (DNI ${issue.reporterDniMasked}) ·
+            ${new Date(issue.createdAt).toLocaleString('es-PE')}
+          </div>
+          <p style="font-size:0.9rem;">${issue.description}</p>
+          ${adjunto}
+          ${badgeFor(issue.status)}
+        </div>
+        ${showActions ? `
+          <div class="admin-actions">
+            <button class="admin-btn admin-btn-approve" onclick="actualizarEstado(${issue.id}, 'APPROVED')">
+              <i data-lucide="check"></i> Aceptar
+            </button>
+            <button class="admin-btn admin-btn-reject" onclick="actualizarEstado(${issue.id}, 'REJECTED')">
+              <i data-lucide="x"></i> Rechazar
+            </button>
+          </div>
+        ` : ''}
+      </div>
+    </div>
+  `;
+}
+
+function renderIssues() {
+  const pending = allIssues.filter(i => i.status === 'PENDING');
+  const approved = allIssues.filter(i => i.status === 'APPROVED');
+  const rejected = allIssues.filter(i => i.status === 'REJECTED');
+
+  document.getElementById('tab-pending').innerHTML = pending.length
+    ? pending.map(i => issueCard(i, true)).join('')
+    : '<div class="admin-empty">No hay reportes pendientes.</div>';
+
+  document.getElementById('tab-approved').innerHTML = approved.length
+    ? approved.map(i => issueCard(i, false)).join('')
+    : '<div class="admin-empty">No hay reportes aprobados todavía.</div>';
+
+  document.getElementById('tab-rejected').innerHTML = rejected.length
+    ? rejected.map(i => issueCard(i, false)).join('')
+    : '<div class="admin-empty">No hay reportes rechazados.</div>';
+
+  if (window.lucide) lucide.createIcons();
+}
+
+function renderPersoneros() {
+  const el = document.getElementById('tab-personeros');
+  if (!allPersoneros.length) {
+    el.innerHTML = '<div class="admin-empty">Todavía no hay personeros registrados.</div>';
+    return;
+  }
+  el.innerHTML = `
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>Nombres</th><th>Apellidos</th><th>DNI</th><th>Teléfono</th><th>Email</th><th>Sector</th><th>Rol</th><th>Fecha</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${allPersoneros.map(p => `
+          <tr>
+            <td>${p.firstName}</td>
+            <td>${p.lastName}</td>
+            <td>${p.dniMasked}</td>
+            <td>${p.phone}</td>
+            <td>${p.email}</td>
+            <td>${p.sector}</td>
+            <td>${p.role}</td>
+            <td>${new Date(p.createdAt).toLocaleDateString('es-PE')}</td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>
+  `;
+}
+
+async function actualizarEstado(id, status) {
+  try {
+    await apiPut(`/api/issues/${id}/status?status=${status}`);
+    await cargarTodo();
+  } catch (err) {
+    alert('No se pudo actualizar el reporte: ' + err.message);
+  }
+}
+
+// Si ya hay una clave guardada en esta sesión del navegador, entra directo.
+if (getKey()) {
+  loginScreen.classList.add('hidden');
+  panelScreen.classList.remove('hidden');
+  cargarTodo();
+}
+
+if (window.lucide) lucide.createIcons();
+</script>
+</body>
+</html>
