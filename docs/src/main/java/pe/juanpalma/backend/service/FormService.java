@@ -5,6 +5,7 @@ import pe.juanpalma.backend.dto.PersoneroRequest;
 import pe.juanpalma.backend.entity.IssueReport;
 import pe.juanpalma.backend.entity.IssueStatus;
 import pe.juanpalma.backend.entity.Personero;
+import pe.juanpalma.backend.entity.PersoneroStatus;
 import pe.juanpalma.backend.repository.IssueReportRepository;
 import pe.juanpalma.backend.repository.PersoneroRepository;
 
@@ -47,16 +48,23 @@ public class FormService {
                 r.role()
         );
 
+        if (personeros.existsById(r.dni())) {
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "Este DNI ya está registrado como personero."
+            );
+        }
+
         Personero v = new Personero();
 
+        v.setDni(r.dni());
         v.setFirstName(r.firstName().trim());
         v.setLastName(r.lastName().trim());
-        v.setDniHash(security.hashDni(r.dni()));
-        v.setDniMasked(security.maskDni(r.dni()));
         v.setPhone(r.phone().trim());
         v.setEmail(r.email().trim());
         v.setSector(r.sector());
         v.setRole(r.role());
+        v.setStatus(PersoneroStatus.PENDING);
 
         return personeros.save(v);
     }
@@ -111,7 +119,28 @@ public class FormService {
 
     @Transactional(readOnly = true)
     public List<Personero> getPersoneros() {
-        return personeros.findAllByOrderByIdDesc();
+        return personeros.findAllByOrderByCreatedAtDesc();
+    }
+
+    @Transactional(readOnly = true)
+    public List<Personero> getPersonerosByStatus(PersoneroStatus status) {
+        return personeros.findByStatusOrderByCreatedAtDesc(status);
+    }
+
+    @Transactional
+    public Personero updatePersoneroStatus(String dni, PersoneroStatus status) {
+
+        Personero personero = personeros.findById(dni)
+                .orElseThrow(() ->
+                        new ResponseStatusException(
+                                HttpStatus.NOT_FOUND,
+                                "Personero no encontrado"
+                        )
+                );
+
+        personero.setStatus(status);
+
+        return personeros.save(personero);
     }
 
     @Transactional(readOnly = true)

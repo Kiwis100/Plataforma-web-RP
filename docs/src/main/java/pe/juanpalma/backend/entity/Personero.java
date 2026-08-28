@@ -1,6 +1,5 @@
 package pe.juanpalma.backend.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.time.OffsetDateTime;
 
@@ -8,22 +7,18 @@ import java.time.OffsetDateTime;
 @Table(name = "personeros")
 public class Personero {
 
+    // El DNI es la llave primaria: garantiza a nivel de base de datos que
+    // un mismo DNI no pueda registrarse dos veces como personero, y sirve
+    // como identificador natural del registro (no se usa un id autogenerado).
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "dni", nullable = false, length = 8, updatable = false)
+    private String dni;
 
     @Column(name = "first_name", nullable = false, length = 100)
     private String firstName;
 
     @Column(name = "last_name", nullable = false, length = 100)
     private String lastName;
-
-    @JsonIgnore
-    @Column(name = "dni_hash", nullable = false, length = 64)
-    private String dniHash;
-
-    @Column(name = "dni_masked", nullable = false, length = 20)
-    private String dniMasked;
 
     @Column(nullable = false, length = 9)
     private String phone;
@@ -37,11 +32,19 @@ public class Personero {
     @Column(nullable = false, length = 100)
     private String role;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
+    private PersoneroStatus status = PersoneroStatus.PENDING;
+
     @Column(name = "created_at", nullable = false)
     private OffsetDateTime createdAt = OffsetDateTime.now();
 
-    public Long getId() {
-        return id;
+    public String getDni() {
+        return dni;
+    }
+
+    public void setDni(String dni) {
+        this.dni = dni;
     }
 
     public String getFirstName() {
@@ -58,22 +61,6 @@ public class Personero {
 
     public void setLastName(String v) {
         lastName = v;
-    }
-
-    public String getDniHash() {
-        return dniHash;
-    }
-
-    public void setDniHash(String dniHash) {
-        this.dniHash = dniHash;
-    }
-
-    public String getDniMasked() {
-        return dniMasked;
-    }
-
-    public void setDniMasked(String dniMasked) {
-        this.dniMasked = dniMasked;
     }
 
     public String getPhone() {
@@ -106,6 +93,14 @@ public class Personero {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public PersoneroStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(PersoneroStatus status) {
+        this.status = status;
     }
 
     public OffsetDateTime getCreatedAt() {

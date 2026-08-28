@@ -1,0 +1,36 @@
+# ============================================================
+# SQL Server local para PROBAR el perfil "sqlserver" del backend
+# antes de conectarlo a la Azure SQL real.
+#
+# Usa la imagen oficial de Microsoft (SQL Server 2022, edición
+# Developer: gratuita, con todas las funciones, solo no se puede
+# usar en producción real).
+#
+# Uso:
+#   docker compose up -d
+#   (esperar ~20 segundos a que arranque)
+#   crear la base de datos: ver docs/local-sqlserver/crear-base-datos.sh
+#
+# Para detenerlo:  docker compose down
+# Para borrar todo (empezar de cero): docker compose down -v
+# ============================================================
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: juanpalma-sqlserver-local
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: "JuanPalma2027!Surco"
+      MSSQL_PID: "Developer"
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlserver-data:/var/opt/mssql
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P \"$$MSSQL_SA_PASSWORD\" -C -Q 'SELECT 1' || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  sqlserver-data:

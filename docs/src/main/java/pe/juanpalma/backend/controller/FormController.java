@@ -8,6 +8,7 @@ import pe.juanpalma.backend.dto.IssuePublicView;
 import pe.juanpalma.backend.dto.IssueRequest;
 import pe.juanpalma.backend.dto.PersoneroRequest;
 import pe.juanpalma.backend.entity.IssueStatus;
+import pe.juanpalma.backend.entity.PersoneroStatus;
 import pe.juanpalma.backend.service.FormService;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -55,7 +56,7 @@ public class FormController {
         return ResponseEntity.status(HttpStatus.CREATED).body(Map.of(
                 "success", true,
                 "message", "Personero registrado correctamente.",
-                "id", p.getId()
+                "dni", p.getDni()
         ));
     }
 
@@ -71,6 +72,41 @@ public class FormController {
                                                @RequestParam String q) {
         authorize(key);
         return ResponseEntity.ok(service.searchPersoneros(q));
+    }
+
+    @GetMapping("/personeros/pending")
+    public ResponseEntity<?> getPendingPersoneros(@RequestHeader("X-Admin-Key") String key) {
+        authorize(key);
+        return ResponseEntity.ok(service.getPersonerosByStatus(PersoneroStatus.PENDING));
+    }
+
+    @GetMapping("/personeros/approved")
+    public ResponseEntity<?> getApprovedPersoneros(@RequestHeader("X-Admin-Key") String key) {
+        authorize(key);
+        return ResponseEntity.ok(service.getPersonerosByStatus(PersoneroStatus.APPROVED));
+    }
+
+    @GetMapping("/personeros/rejected")
+    public ResponseEntity<?> getRejectedPersoneros(@RequestHeader("X-Admin-Key") String key) {
+        authorize(key);
+        return ResponseEntity.ok(service.getPersonerosByStatus(PersoneroStatus.REJECTED));
+    }
+
+    @PutMapping("/personeros/{dni}/status")
+    public ResponseEntity<?> updatePersoneroStatus(
+            @RequestHeader("X-Admin-Key") String key,
+            @PathVariable String dni,
+            @RequestParam PersoneroStatus status) {
+
+        authorize(key);
+        var personero = service.updatePersoneroStatus(dni, status);
+
+        return ResponseEntity.ok(Map.of(
+                "success", true,
+                "message", "Estado del personero actualizado correctamente.",
+                "dni", personero.getDni(),
+                "status", personero.getStatus()
+        ));
     }
 
     // Recibe multipart/form-data: los campos de texto + un adjunto opcional
