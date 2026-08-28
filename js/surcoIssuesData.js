@@ -35,7 +35,6 @@ let surcoIssues = [
       "Alertas automáticas para Serenazgo"
     ],
     isOfficial: true,
-    upvotes: 142
   },
   {
     id: "PLAN-02",
@@ -54,7 +53,6 @@ let surcoIssues = [
       "Dashboard de movilidad"
     ],
     isOfficial: true,
-    upvotes: 118
   },
   {
     id: "PLAN-03",
@@ -73,7 +71,6 @@ let surcoIssues = [
       "Alertas por contaminación"
     ],
     isOfficial: true,
-    upvotes: 189
   },
   {
     id: "PLAN-04",
@@ -91,7 +88,6 @@ let surcoIssues = [
       "Dashboard de limpieza"
     ],
     isOfficial: true,
-    upvotes: 176
   },
   {
     id: "PLAN-05",
@@ -109,7 +105,6 @@ let surcoIssues = [
       "Historial digital"
     ],
     isOfficial: true,
-    upvotes: 97
   },
   {
     id: "PLAN-06",
@@ -127,7 +122,6 @@ let surcoIssues = [
       "Teleasistencia"
     ],
     isOfficial: true,
-    upvotes: 84
   },
   {
     id: "PLAN-07",
@@ -145,7 +139,6 @@ let surcoIssues = [
       "Ventanilla única"
     ],
     isOfficial: true,
-    upvotes: 63
   },
   {
     id: "PLAN-08",
@@ -164,7 +157,6 @@ let surcoIssues = [
       "Trámites en línea"
     ],
     isOfficial: true,
-    upvotes: 71
   },
   {
     id: "PLAN-09",
@@ -182,6 +174,5 @@ let surcoIssues = [
       "Seguimiento de proyectos"
     ],
     isOfficial: true,
-    upvotes: 105
   }
 ];

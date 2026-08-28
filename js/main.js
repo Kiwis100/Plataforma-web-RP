@@ -236,25 +236,8 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
         ` : ''}
 
-        <div style="display: flex; justify-content: flex-end; align-items: center; margin-top: 1rem;">
-          <button class="btn btn-outline upvote-btn" data-id="${issue.id}" style="padding: 0.4rem 0.9rem; font-size: 0.82rem;">
-            <i data-lucide="thumbs-up"></i>
-            <span>Apoyar esta Solución (${issue.upvotes})</span>
-          </button>
-        </div>
       </div>
     `).join('');
-
-    issuesListContainer.querySelectorAll('.upvote-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const id = btn.getAttribute('data-id');
-        const item = surcoIssues.find(i => i.id === id);
-        if (item) {
-          item.upvotes += 1;
-          renderIssuesList();
-        }
-      });
-    });
 
     if (window.lucide) lucide.createIcons();
   }
@@ -304,8 +287,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
       isOfficial: false,
 
-      upvotes: 1,
-
       attachmentUrl: r.attachmentPath ? `${API_BASE_URL}/${r.attachmentPath}` : null,
       attachmentType: r.attachmentType || null
     }));
@@ -346,38 +327,10 @@ document.addEventListener('DOMContentLoaded', () => {
           <div style="display: flex; align-items: center; gap: 0.5rem;"><i data-lucide="map-pin"></i> <span>${event.location}</span></div>
         </div>
 
-        <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 1rem; border-top: 1px solid #E2E8F0;">
-          <span style="font-size: 0.85rem; color: var(--text-muted); display: flex; align-items: center; gap: 0.3rem;"><i data-lucide="users"></i> ${event.attendees} asistirán</span>
-          <button class="btn btn-outline rsvp-btn" style="padding: 0.45rem 1rem; font-size: 0.85rem;">Asistiré</button>
+        <div style="display: flex; align-items: center; gap: 0.5rem; padding-top: 1rem; border-top: 1px solid #E2E8F0; font-size: 0.85rem; color: var(--text-muted);">
+          <i data-lucide="megaphone"></i> <span>Anuncio de campaña</span>
         </div>
       </div>
-    `).join('');
-
-    agendaGrid.querySelectorAll('.rsvp-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        btn.classList.toggle('btn-navy');
-        btn.classList.toggle('btn-outline');
-        btn.innerHTML = btn.classList.contains('btn-navy') ? '<i data-lucide="circle-check-big"></i> ¡Confirmado!' : 'Asistiré';
-        if (window.lucide) lucide.createIcons();
-      });
-    });
-  }
-
-  const newsGrid = document.getElementById('news-grid');
-  if (newsGrid) {
-    newsGrid.innerHTML = campaignNews.map(news => `
-      <article class="glass-card" style="overflow: hidden;">
-        <img src="${news.image}" alt="${news.title}" style="width: 100%; height: 200px; object-fit: cover;" />
-        <div style="padding: 1.5rem;">
-          <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-            <span class="badge badge-gold" style="font-size: 0.75rem;">${news.category}</span>
-            <span style="font-size: 0.8rem; color: var(--text-muted);">${news.readTime}</span>
-          </div>
-          <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--primary-dark); margin-bottom: 0.75rem;">${news.title}</h3>
-          <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1.25rem;">${news.summary}</p>
-          <span style="font-size: 0.8rem; color: var(--primary-navy); font-weight: 600;">${news.date}</span>
-        </div>
-      </article>
     `).join('');
   }
 
@@ -415,7 +368,6 @@ document.addEventListener('DOMContentLoaded', () => {
         <div style="padding: 1.25rem;">
           <span class="badge badge-navy" style="font-size: 0.75rem;">${video.tag}</span>
           <h4 style="font-size: 1.1rem; font-weight: 800; color: var(--primary-dark); margin: 0.4rem 0;">${video.title}</h4>
-          <span style="font-size: 0.8rem; color: var(--text-muted);">${video.views}</span>
         </div>
       </div>
     `).join('');

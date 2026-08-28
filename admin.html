@@ -88,15 +88,22 @@
   </header>
 
   <main class="admin-main">
-    <div class="admin-tabs">
-      <button class="admin-tab-btn active" data-tab="pending">Reportes Pendientes</button>
-      <button class="admin-tab-btn" data-tab="approved">Reportes Aprobados</button>
-      <button class="admin-tab-btn" data-tab="rejected">Reportes Rechazados</button>
-      <button class="admin-tab-btn" data-tab="personeros">Personeros Registrados</button>
+    <div class="admin-tabs" style="margin-bottom: 0.5rem;">
+      <span style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); align-self: center;">Reportes:</span>
+      <button class="admin-tab-btn active" data-tab="pending">Pendientes</button>
+      <button class="admin-tab-btn" data-tab="approved">Aprobados</button>
+      <button class="admin-tab-btn" data-tab="rejected">Rechazados</button>
       <button class="admin-tab-btn" id="btn-refresh" style="margin-left: auto;">
         <i data-lucide="refresh-cw" style="width:14px;height:14px;vertical-align:-2px;"></i>
         Actualizar
       </button>
+    </div>
+
+    <div class="admin-tabs">
+      <span style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); align-self: center;">Personeros:</span>
+      <button class="admin-tab-btn" data-tab="personeros-pending">Pendientes</button>
+      <button class="admin-tab-btn" data-tab="personeros-approved">Aceptados</button>
+      <button class="admin-tab-btn" data-tab="personeros-rejected">Rechazados</button>
     </div>
 
     <div class="admin-card-row" style="margin-bottom: 1.25rem; align-items: center;">
@@ -108,7 +115,9 @@
     <div id="tab-pending"></div>
     <div id="tab-approved" class="hidden"></div>
     <div id="tab-rejected" class="hidden"></div>
-    <div id="tab-personeros" class="hidden"></div>
+    <div id="tab-personeros-pending" class="hidden"></div>
+    <div id="tab-personeros-approved" class="hidden"></div>
+    <div id="tab-personeros-rejected" class="hidden"></div>
   </main>
 </div>
 
@@ -209,7 +218,7 @@ document.querySelectorAll('.admin-tab-btn[data-tab]').forEach(btn => {
   btn.addEventListener('click', () => {
     document.querySelectorAll('.admin-tab-btn[data-tab]').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
-    ['pending', 'approved', 'rejected', 'personeros'].forEach(t => {
+    ['pending', 'approved', 'rejected', 'personeros-pending', 'personeros-approved', 'personeros-rejected'].forEach(t => {
       document.getElementById(`tab-${t}`).classList.toggle('hidden', t !== btn.dataset.tab);
     });
   });
@@ -298,35 +307,75 @@ function renderIssues() {
   if (window.lucide) lucide.createIcons();
 }
 
-function renderPersoneros() {
-  const el = document.getElementById('tab-personeros');
-  if (!allPersoneros.length) {
-    el.innerHTML = '<div class="admin-empty">Todavía no hay personeros registrados.</div>';
-    return;
+function personeroRow(p, showActions) {
+  return `
+    <tr id="personero-${p.dni}">
+      <td>${p.firstName}</td>
+      <td>${p.lastName}</td>
+      <td>${p.dni}</td>
+      <td>${p.phone}</td>
+      <td>${p.email}</td>
+      <td>${p.sector}</td>
+      <td>${p.role}</td>
+      <td>${new Date(p.createdAt).toLocaleDateString('es-PE')}</td>
+      <td>
+        ${showActions ? `
+          <div class="admin-actions">
+            <button class="admin-btn admin-btn-approve" onclick="actualizarEstadoPersonero('${p.dni}', 'APPROVED')">
+              <i data-lucide="check"></i>
+            </button>
+            <button class="admin-btn admin-btn-reject" onclick="actualizarEstadoPersonero('${p.dni}', 'REJECTED')">
+              <i data-lucide="x"></i>
+            </button>
+          </div>
+        ` : badgeFor(p.status)}
+      </td>
+    </tr>
+  `;
+}
+
+function personeroTable(lista, showActions, mensajeVacio) {
+  if (!lista.length) {
+    return `<div class="admin-empty">${mensajeVacio}</div>`;
   }
-  el.innerHTML = `
+  return `
     <table class="admin-table">
       <thead>
         <tr>
-          <th>Nombres</th><th>Apellidos</th><th>DNI</th><th>Teléfono</th><th>Email</th><th>Sector</th><th>Rol</th><th>Fecha</th>
+          <th>Nombres</th><th>Apellidos</th><th>DNI</th><th>Teléfono</th><th>Email</th><th>Sector</th><th>Rol</th><th>Fecha</th><th>${showActions ? 'Acción' : 'Estado'}</th>
         </tr>
       </thead>
       <tbody>
-        ${allPersoneros.map(p => `
-          <tr>
-            <td>${p.firstName}</td>
-            <td>${p.lastName}</td>
-            <td>${p.dniMasked}</td>
-            <td>${p.phone}</td>
-            <td>${p.email}</td>
-            <td>${p.sector}</td>
-            <td>${p.role}</td>
-            <td>${new Date(p.createdAt).toLocaleDateString('es-PE')}</td>
-          </tr>
-        `).join('')}
+        ${lista.map(p => personeroRow(p, showActions)).join('')}
       </tbody>
     </table>
   `;
+}
+
+function renderPersoneros() {
+  const pending = allPersoneros.filter(p => p.status === 'PENDING');
+  const approved = allPersoneros.filter(p => p.status === 'APPROVED');
+  const rejected = allPersoneros.filter(p => p.status === 'REJECTED');
+
+  document.getElementById('tab-personeros-pending').innerHTML =
+    personeroTable(pending, true, 'No hay personeros pendientes de revisión.');
+
+  document.getElementById('tab-personeros-approved').innerHTML =
+    personeroTable(approved, false, 'Todavía no hay personeros aceptados.');
+
+  document.getElementById('tab-personeros-rejected').innerHTML =
+    personeroTable(rejected, false, 'No hay personeros rechazados.');
+
+  if (window.lucide) lucide.createIcons();
+}
+
+async function actualizarEstadoPersonero(dni, status) {
+  try {
+    await apiPut(`/api/personeros/${dni}/status?status=${status}`);
+    await cargarTodo();
+  } catch (err) {
+    alert('No se pudo actualizar el personero: ' + err.message);
+  }
 }
 
 async function actualizarEstado(id, status) {
