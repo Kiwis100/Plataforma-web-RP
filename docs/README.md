@@ -4,7 +4,9 @@ Backend Spring Boot 3 + Java 17 para los formularios de la plataforma.
 
 ## Funciones
 
-- Registro de personeros (nombres y apellidos por separado).
+- Registro de personeros (nombres y apellidos por separado), con selección
+  de su lugar de votación real (catálogo `centros_votacion`, enlazado por
+  llave foránea).
 - Reportes de incidencias en "Los Problemas de Surco", con nombres/apellidos
   del vecino que reporta y adjunto opcional de foto o video.
 - Búsqueda por nombre o apellido (personeros y reportes).
@@ -40,6 +42,16 @@ Health:
 `GET http://localhost:8080/api/health`
 
 ## 1b. Probar contra SQL Server real (antes de usar Azure SQL)
+
+> ⚠️ Si ya tenías la tabla `personeros` creada de una prueba anterior, el
+> esquema volvió a cambiar (ahora tiene `centro_votacion_id` en vez de
+> `sector`, con llave foránea). Antes de correr el backend de nuevo,
+> bórrala para que se recree limpia:
+> ```sql
+> DROP TABLE IF EXISTS personeros;
+> DROP TABLE IF EXISTS centros_votacion;
+> ```
+> (la tabla `centros_votacion` se crea y se llena sola al arrancar)
 
 Por defecto el backend usa H2 (archivo local), que funciona pero no es
 exactamente el mismo motor que Azure SQL. Para probar contra un SQL Server
@@ -104,14 +116,35 @@ si además quieres borrar los datos y empezar de cero la próxima vez).
 
 ## 2. Probar formulario de personeros
 
+Primero consulta los lugares de votación disponibles (endpoint público, sin
+clave admin):
+
+```bash
+curl http://localhost:8080/api/centros-votacion
+```
+
+Devuelve una lista con `id`, `nombre`, `categoria` y `direccion` — usa uno
+de esos `id` como `centroVotacionId` al registrar:
+
 ```bash
 curl -X POST http://localhost:8080/api/personeros \
   -H "Content-Type: application/json" \
-  -d "{\"firstName\":\"Maria\",\"lastName\":\"Perez Lopez\",\"dni\":\"12345678\",\"phone\":\"987654321\",\"email\":\"maria@example.com\",\"sector\":\"sector-1\",\"role\":\"Brigadista Digital / Redes\"}"
+  -d "{\"firstName\":\"Maria\",\"lastName\":\"Perez Lopez\",\"dni\":\"12345678\",\"phone\":\"987654321\",\"email\":\"maria@example.com\",\"centroVotacionId\":1,\"role\":\"Brigadista Digital / Redes\"}"
 ```
 
 `phone` debe ser exactamente 9 dígitos numéricos. `firstName`/`lastName` solo
-aceptan letras (sin números ni símbolos).
+aceptan letras (sin números ni símbolos). `centroVotacionId` debe existir en
+la tabla `centros_votacion` (si no, responde `400 Bad Request`).
+
+### Sobre la tabla `centros_votacion`
+
+Es un catálogo de referencia, separado de `personeros` y enlazado por llave
+foránea (`personeros.centro_votacion_id → centros_votacion.id`). Se llena
+sola al arrancar el backend por primera vez (ver `DataSeeder.java`), con los
+locales de la elección **presidencial** en Santiago de Surco — porque el
+JNE/ONPE todavía no publica los locales oficiales para la elección
+**municipal** 2026. Si salen variaciones cuando se publiquen los oficiales,
+se edita la lista en `DataSeeder.java` y se reinicia la aplicación.
 
 ## 3. Probar reporte de incidencia (Los Problemas de Surco)
 

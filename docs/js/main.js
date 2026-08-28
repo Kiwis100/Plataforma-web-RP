@@ -450,8 +450,38 @@ document.addEventListener('DOMContentLoaded', () => {
     if (volunteerModal) volunteerModal.classList.add('hidden');
   }
 
-  if (btnOpenVoluntariado) btnOpenVoluntariado.addEventListener('click', openVolunteerModal);
-  if (footerBtnVolunteer) footerBtnVolunteer.addEventListener('click', openVolunteerModal);
+  // Carga los lugares de votación reales (locales de referencia de la
+  // elección presidencial) desde el backend, una sola vez.
+  let centrosVotacionCargados = false;
+  async function cargarCentrosVotacion() {
+    const select = document.getElementById('vol-centro-votacion');
+    if (!select || centrosVotacionCargados) return;
+
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/centros-votacion`);
+      const centros = await res.json();
+
+      const grupos = {};
+      centros.forEach(c => {
+        if (!grupos[c.categoria]) grupos[c.categoria] = [];
+        grupos[c.categoria].push(c);
+      });
+
+      select.innerHTML = '<option value="">Selecciona tu lugar de votación...</option>' +
+        Object.keys(grupos).map(categoria => `
+          <optgroup label="${categoria}">
+            ${grupos[categoria].map(c => `<option value="${c.id}">${c.nombre} — ${c.direccion}</option>`).join('')}
+          </optgroup>
+        `).join('');
+
+      centrosVotacionCargados = true;
+    } catch (err) {
+      select.innerHTML = '<option value="">No se pudo cargar la lista. Intenta de nuevo.</option>';
+    }
+  }
+
+  if (btnOpenVoluntariado) btnOpenVoluntariado.addEventListener('click', () => { openVolunteerModal(); cargarCentrosVotacion(); });
+  if (footerBtnVolunteer) footerBtnVolunteer.addEventListener('click', () => { openVolunteerModal(); cargarCentrosVotacion(); });
   if (btnCloseVolunteer) btnCloseVolunteer.addEventListener('click', closeVolunteerModal);
 
   if (volunteerForm) {
@@ -467,7 +497,7 @@ document.addEventListener('DOMContentLoaded', () => {
         dni: document.getElementById('vol-dni').value,
         phone: document.getElementById('vol-phone').value,
         email: document.getElementById('vol-email').value,
-        sector: document.getElementById('vol-sector').value,
+        centroVotacionId: Number(document.getElementById('vol-centro-votacion').value),
         role: document.getElementById('vol-role').value
       };
 

@@ -26,8 +26,9 @@ public class Personero {
     @Column(nullable = false, length = 150)
     private String email;
 
-    @Column(nullable = false, length = 40)
-    private String sector;
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "centro_votacion_id", nullable = false, foreignKey = @ForeignKey(name = "fk_personero_centro_votacion"))
+    private CentroVotacion centroVotacion;
 
     @Column(nullable = false, length = 100)
     private String role;
@@ -79,12 +80,12 @@ public class Personero {
         this.email = email;
     }
 
-    public String getSector() {
-        return sector;
+    public CentroVotacion getCentroVotacion() {
+        return centroVotacion;
     }
 
-    public void setSector(String sector) {
-        this.sector = sector;
+    public void setCentroVotacion(CentroVotacion centroVotacion) {
+        this.centroVotacion = centroVotacion;
     }
 
     public String getRole() {

@@ -315,7 +315,7 @@ function personeroRow(p, showActions) {
       <td>${p.dni}</td>
       <td>${p.phone}</td>
       <td>${p.email}</td>
-      <td>${p.sector}</td>
+      <td>${p.centroVotacion ? p.centroVotacion.nombre : '—'}</td>
       <td>${p.role}</td>
       <td>${new Date(p.createdAt).toLocaleDateString('es-PE')}</td>
       <td>
@@ -342,7 +342,7 @@ function personeroTable(lista, showActions, mensajeVacio) {
     <table class="admin-table">
       <thead>
         <tr>
-          <th>Nombres</th><th>Apellidos</th><th>DNI</th><th>Teléfono</th><th>Email</th><th>Sector</th><th>Rol</th><th>Fecha</th><th>${showActions ? 'Acción' : 'Estado'}</th>
+          <th>Nombres</th><th>Apellidos</th><th>DNI</th><th>Teléfono</th><th>Email</th><th>Lugar de Votación</th><th>Rol</th><th>Fecha</th><th>${showActions ? 'Acción' : 'Estado'}</th>
         </tr>
       </thead>
       <tbody>

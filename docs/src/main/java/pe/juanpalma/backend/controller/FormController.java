@@ -60,6 +60,14 @@ public class FormController {
         ));
     }
 
+    // Público: el frontend lo usa para llenar el desplegable de "Lugar de
+    // votación" en el formulario de personero. No requiere clave admin
+    // porque es un catálogo de referencia, no datos personales.
+    @GetMapping("/centros-votacion")
+    public ResponseEntity<?> getCentrosVotacion() {
+        return ResponseEntity.ok(service.getCentrosVotacion());
+    }
+
     // Solo el panel de administración puede ver la lista de personeros.
     @GetMapping("/personeros")
     public ResponseEntity<?> getPersoneros(@RequestHeader("X-Admin-Key") String key) {

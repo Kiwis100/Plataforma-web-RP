@@ -2,10 +2,12 @@ package pe.juanpalma.backend.service;
 
 import pe.juanpalma.backend.dto.IssueRequest;
 import pe.juanpalma.backend.dto.PersoneroRequest;
+import pe.juanpalma.backend.entity.CentroVotacion;
 import pe.juanpalma.backend.entity.IssueReport;
 import pe.juanpalma.backend.entity.IssueStatus;
 import pe.juanpalma.backend.entity.Personero;
 import pe.juanpalma.backend.entity.PersoneroStatus;
+import pe.juanpalma.backend.repository.CentroVotacionRepository;
 import pe.juanpalma.backend.repository.IssueReportRepository;
 import pe.juanpalma.backend.repository.PersoneroRepository;
 
@@ -21,17 +23,20 @@ public class FormService {
 
     private final PersoneroRepository personeros;
     private final IssueReportRepository issues;
+    private final CentroVotacionRepository centrosVotacion;
     private final TextSecurityService security;
     private final FileStorageService fileStorage;
 
     public FormService(
             PersoneroRepository personeros,
             IssueReportRepository issues,
+            CentroVotacionRepository centrosVotacion,
             TextSecurityService security,
             FileStorageService fileStorage) {
 
         this.personeros = personeros;
         this.issues = issues;
+        this.centrosVotacion = centrosVotacion;
         this.security = security;
         this.fileStorage = fileStorage;
     }
@@ -55,6 +60,12 @@ public class FormService {
             );
         }
 
+        CentroVotacion centro = centrosVotacion.findById(r.centroVotacionId())
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.BAD_REQUEST,
+                        "El lugar de votación seleccionado no es válido."
+                ));
+
         Personero v = new Personero();
 
         v.setDni(r.dni());
@@ -62,11 +73,16 @@ public class FormService {
         v.setLastName(r.lastName().trim());
         v.setPhone(r.phone().trim());
         v.setEmail(r.email().trim());
-        v.setSector(r.sector());
+        v.setCentroVotacion(centro);
         v.setRole(r.role());
         v.setStatus(PersoneroStatus.PENDING);
 
         return personeros.save(v);
+    }
+
+    @Transactional(readOnly = true)
+    public List<CentroVotacion> getCentrosVotacion() {
+        return centrosVotacion.findAllByOrderByCategoriaAscNombreAsc();
     }
 
     @Transactional
