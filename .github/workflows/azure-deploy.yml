@@ -1,28 +1,25 @@
 name: Deploy a Azure App Service (swcap-p-renovacion-frontend-app)
 
-# Se activa con cada push a "develop" que toque el proyecto de docs/
-# (el Federated Credential en Entra ID está configurado exactamente para
-# esta rama: repo:Kiwis100/Plataforma-web-RP:ref:refs/heads/develop).
 on:
   push:
     branches:
       - develop
     paths:
       - "docs/**"
-  workflow_dispatch: # permite lanzarlo a mano desde la pestaña Actions
+  workflow_dispatch:
 
-# Necesario para autenticarse en Azure vía OIDC (sin client secret).
 permissions:
   id-token: write
   contents: read
 
 env:
-  APP_NAME: ${{ vars.AZURE_APP_SERVICE_NAME }} # swcap-p-renovacion-frontend-app
+  APP_NAME: ${{ vars.AZURE_APP_SERVICE_NAME }}
   WORKING_DIR: docs
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+
     steps:
       - name: Descargar el código
         uses: actions/checkout@v4
@@ -35,11 +32,11 @@ jobs:
           cache: maven
           cache-dependency-path: ${{ env.WORKING_DIR }}/pom.xml
 
-      - name: Compilar (el .jar incluye el frontend estático empaquetado)
+      - name: Compilar
         working-directory: ${{ env.WORKING_DIR }}
         run: mvn -B clean package -DskipTests
 
-      - name: Iniciar sesión en Azure (OIDC, sin client secret)
+      - name: Iniciar sesión en Azure
         uses: azure/login@v2
         with:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
@@ -52,8 +49,29 @@ jobs:
           app-name: ${{ env.APP_NAME }}
           package: ${{ env.WORKING_DIR }}/target/backend-plataforma.jar
 
+      - name: Verificar DNS de Azure
+        run: |
+          echo "App Service: ${{ env.APP_NAME }}"
+          echo "Dominio: ${{ env.APP_NAME }}.azurewebsites.net"
+          echo "Resolviendo dominio..."
+          getent hosts "${{ env.APP_NAME }}.azurewebsites.net" || true
+
       - name: Verificar que el sitio responde
         run: |
           echo "Esperando a que la app arranque..."
-          sleep 40
-          curl -f "https://${{ env.APP_NAME }}.azurewebsites.net/actuator/health" || exit 1
+
+          for i in {1..12}; do
+            echo "Intento $i de 12..."
+
+            if curl -f --connect-timeout 10 --max-time 30 \
+              "https://${{ env.APP_NAME }}.azurewebsites.net/actuator/health"; then
+              echo "La aplicación está funcionando correctamente."
+              exit 0
+            fi
+
+            echo "La aplicación todavía no responde. Esperando 10 segundos..."
+            sleep 10
+          done
+
+          echo "La aplicación no respondió después de varios intentos."
+          exit 1
