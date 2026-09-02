@@ -485,8 +485,17 @@ document.addEventListener('DOMContentLoaded', () => {
   if (btnCloseVolunteer) btnCloseVolunteer.addEventListener('click', closeVolunteerModal);
 
   if (volunteerForm) {
+    let enviandoPersonero = false;
+
     volunteerForm.addEventListener('submit', async (e) => {
       e.preventDefault();
+
+      // Bloqueo inmediato y síncrono: si ya hay un envío en curso (ej. por
+      // doble clic muy rápido, antes de que el botón alcance a
+      // deshabilitarse visualmente), este segundo intento se ignora del
+      // todo, sin llegar a mandar una segunda petición al servidor.
+      if (enviandoPersonero) return;
+      enviandoPersonero = true;
 
       const submitBtn = volunteerForm.querySelector('button[type="submit"]');
       if (submitBtn) submitBtn.disabled = true;
@@ -530,6 +539,7 @@ document.addEventListener('DOMContentLoaded', () => {
         alert(err.message || 'Ocurrió un error al registrar tu inscripción. Intenta nuevamente.');
       } finally {
         if (submitBtn) submitBtn.disabled = false;
+        enviandoPersonero = false;
       }
     });
   }
@@ -579,8 +589,13 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   if (reportIssueForm) {
+    let enviandoReporte = false;
+
     reportIssueForm.addEventListener('submit', async (e) => {
       e.preventDefault();
+
+      if (enviandoReporte) return;
+      enviandoReporte = true;
 
       const submitBtn = reportIssueForm.querySelector('button[type="submit"]');
       if (submitBtn) submitBtn.disabled = true;
@@ -623,6 +638,7 @@ document.addEventListener('DOMContentLoaded', () => {
         alert(err.message || 'Ocurrió un error al registrar tu reporte. Intenta nuevamente.');
       } finally {
         if (submitBtn) submitBtn.disabled = false;
+        enviandoReporte = false;
       }
     });
   }
